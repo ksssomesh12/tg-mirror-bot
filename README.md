@@ -36,7 +36,7 @@ pip3 install -r requirements-cli.txt
 
 - Clone the Repo:
 ```
-git clone https://github.com/ksssomesh12/py-aria-mirror-bot
+git clone https://github.com/ksssomesh12/tg-mirror-bot
 cd tg-mirror-bot
 ```
 
@@ -93,11 +93,11 @@ sudo dockerd
 ```
 - Build Docker Image:
 ```
-sudo docker build . -t py-aria-mirror-bot
+sudo docker build . -t tg-mirror-bot
 ```
 - Run the Image:
 ```
-sudo docker run py-aria-mirror-bot
+sudo docker run tg-mirror-bot
 ```
 
 # Deploy to Heroku Manually:
@@ -106,7 +106,7 @@ sudo docker run py-aria-mirror-bot
 
 - Create your GitHub account (skip if you already have one).
 - Open [this link](https://github.com/new/import) to import this repo to a new repo that will be created and owned by you.
-- Clone this existing repo to your new private repo by pasting [this repo's url](https://github.com/ksssomesh12/py-aria-mirror-bot) in the clone url field and enter any name for your repo (for our reference, your-private-repo).
+- Clone this existing repo to your new private repo by pasting [this repo's url](https://github.com/ksssomesh12/tg-mirror-bot) in the clone url field and enter any name for your repo (for our reference, your-private-repo).
 - Clone your private repo locally and delete the '.gitignore' file:
 ```
 git clone https://github.com/username/your-private-repo
@@ -121,7 +121,7 @@ git add .
 git commit -m "removed gitignore file"
 git push -f origin master
 ```
-- Now, set up the config file by following [this section](https://github.com/ksssomesh12/py-aria-mirror-bot#Cloning-and-Setting-Up-Config-File) and get the OAuth credential file by following [this section](https://github.com/ksssomesh12/py-aria-mirror-bot#Getting-Google-OAuth-API-Credential-File).
+- Now, set up the config file by following [this section](https://github.com/ksssomesh12/tg-mirror-bot#Cloning-and-Setting-Up-Config-File) and get the OAuth credential file by following [this section](https://github.com/ksssomesh12/tg-mirror-bot#Getting-Google-OAuth-API-Credential-File).
 
 **NOTE:** The cloned repo's visibility must be set to private, as this method requires the sensitive files (credentials.json, config.env, token.pickle, authorized_chats.txt, log.txt) containing personal data to be in the repo to be successfully deployed on Heroku; setting repo's visibility to 'public' might compromise personal data. Alternatively, you can set up a git repo on your local machine by cloning this repo and sync it with Heroku Git remote repo.
 
@@ -197,7 +197,7 @@ Step 1. Generate service accounts [What is service account](https://cloud.google
 ---------------------------------
 Let us create only the service accounts that we need.
 
-**Warning:** abuse of this feature is not the aim of this project and we do **NOT** recommend that you make a lot of projects, just one project and 100 sa allow you plenty of use, it is also possible that over abuse might get your projects banned by google.
+**Warning:** abuse of this feature is not the aim of this project, and we do **NOT** recommend that you make a lot of projects, just one project and 100 sa allow you plenty of use, it is also possible that over abuse might get your projects banned by google.
 
 **NOTE:** 1 service account can copy around 750 GB/day. 1 project can make 100 service accounts so that's 75 TB/day, for most users this should easily suffice.
 ```

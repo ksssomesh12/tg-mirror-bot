@@ -3,34 +3,37 @@ version: 2.1
 workflows:
   build-deploy:
     jobs:
-      - build-test:
+      - build-image:
           filters:
             branches:
               only:
                 - master
                 - staging
-                - dev
+          context:
+            - docker-hub-creds
       - deploy-docker:
           requires:
-            - build-test
+            - build-image
           context:
             - docker-hub-creds
 
 jobs:
-  build-test:
-    machine: true
-    steps:
-      - checkout
-      - run: docker build .
-
-  deploy-docker:
+  build-image:
     machine: true
     steps:
       - checkout
       - run: |
           TAG=0.1.$CIRCLE_BUILD_NUM
-          docker build . -t ksssomesh12/py-aria-mirror-bot:$CIRCLE_BRANCH-$TAG
+          docker build . -t ksssomesh12/tg-mirror-bot:$CIRCLE_BRANCH-$TAG
           echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
-          docker push ksssomesh12/py-aria-mirror-bot:$CIRCLE_BRANCH-$TAG
-          docker tag ksssomesh12/py-aria-mirror-bot:$CIRCLE_BRANCH-$TAG ksssomesh12/py-aria-mirror-bot:$CIRCLE_BRANCH-latest
-          docker push ksssomesh12/py-aria-mirror-bot:$CIRCLE_BRANCH-latest
+          docker push ksssomesh12/tg-mirror-bot:$CIRCLE_BRANCH-$TAG
+
+  deploy-docker:
+    machine: true
+    steps:
+      - run: |
+          BUILD_NUMBER=`expr $CIRCLE_BUILD_NUM - 1` && TAG=0.1.$BUILD_NUMBER
+          echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
+          docker pull ksssomesh12/tg-mirror-bot:$CIRCLE_BRANCH-$TAG
+          docker tag ksssomesh12/tg-mirror-bot:$CIRCLE_BRANCH-$TAG ksssomesh12/tg-mirror-bot:$CIRCLE_BRANCH-latest
+          docker push ksssomesh12/tg-mirror-bot:$CIRCLE_BRANCH-latest
