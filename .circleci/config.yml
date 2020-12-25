@@ -48,7 +48,7 @@ jobs:
     machine: true
     steps:
       - run: |
-          sudo apt-get update && sudo apt-get aria2
+          sudo apt-get update && sudo apt-get install aria2
           echo $BOT_ENV_LINK | aria2c --input-file=-
           tar -xvf env.tar.xz && rm -rvf env.tar.xz
           bash ./create_dockerfile.sh
