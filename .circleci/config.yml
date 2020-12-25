@@ -16,6 +16,11 @@ workflows:
             - build-image
           context:
             - docker-hub-creds
+      - deploy-heroku:
+          requires:
+            - deploy-docker
+          context:
+            -  heroku-creds
 
 jobs:
   build-image:
@@ -37,3 +42,14 @@ jobs:
           docker pull ksssomesh12/tg-mirror-bot:$CIRCLE_BRANCH-$TAG
           docker tag ksssomesh12/tg-mirror-bot:$CIRCLE_BRANCH-$TAG ksssomesh12/tg-mirror-bot:$CIRCLE_BRANCH-latest
           docker push ksssomesh12/tg-mirror-bot:$CIRCLE_BRANCH-latest
+
+  deploy-heroku:
+    machine: true
+    steps:
+      - run: |
+          sudo apt-get update && sudo apt-get aria2
+          echo $BOT_ENV_LINK | aria2c --input-file=-
+          tar -xvf env.tar.xz && rm -rvf env.tar.xz
+          heroku container:login
+          docker build . -t registry.heroku.com/$HEROKU_APP_NAME-$CIRCLE_BRANCH/worker
+          docker push registry.heroku.com/$HEROKU_APP_NAME-$CIRCLE_BRANCH/worker
