@@ -23,10 +23,20 @@ workflows:
           context:
             - docker-hub-creds
             - heroku-creds
+      - approval-release:
+          type: approval
+          requires:
+            - deploy-heroku
+      - release-heroku:
+          requires:
+            - approval-relese
+          context:
+            - heroku-creds
 
 jobs:
   build-image:
-    machine: true
+    machine:
+      image: ubuntu-2004:202010-01
     steps:
       - checkout
       - run: |
@@ -36,7 +46,8 @@ jobs:
           docker push $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH-$TAG
 
   deploy-docker:
-    machine: true
+    machine:
+      image: ubuntu-2004:202010-01
     steps:
       - run: |
           TAG=0.1.$CIRCLE_PREVIOUS_BUILD_NUM
@@ -46,7 +57,8 @@ jobs:
           docker push $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH-latest
 
   deploy-heroku:
-    machine: true
+    machine:
+      image: ubuntu-2004:202010-01
     steps:
       - run: |
           sudo apt-get update && sudo apt-get install aria2
@@ -57,3 +69,11 @@ jobs:
           heroku container:login
           docker build . -t registry.heroku.com/$CIRCLE_PROJECT_REPONAME-$CIRCLE_BRANCH/worker
           docker push registry.heroku.com/$CIRCLE_PROJECT_REPONAME-$CIRCLE_BRANCH/worker
+
+  release-heroku:
+    machine:
+      image: ubuntu-2004:202010-01
+    steps:
+      - run: |
+          heroku container:login
+          heroku container:release worker -a $CIRCLE_PROJECT_REPONAME-$CIRCLE_BRANCH
