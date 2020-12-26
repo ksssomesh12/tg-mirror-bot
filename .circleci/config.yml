@@ -29,7 +29,7 @@ workflows:
             - deploy-heroku
       - release-heroku:
           requires:
-            - approval-relese
+            - approval-release
           context:
             - heroku-creds
 
