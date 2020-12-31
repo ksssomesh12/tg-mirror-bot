@@ -3,23 +3,28 @@ version: 2.1
 workflows:
   build-release:
     jobs:
-      - build-push:
+      - build:
+          context:
+            - docker-hub-creds
+      - deploy:
+          requires:
+            - build
           context:
             - docker-hub-creds
             - heroku-creds
-      - approval-release:
+      - approval:
           type: approval
           requires:
-            - build-push
+            - deploy
       - release:
           requires:
-            - approval-release
+            - approval
           context:
             - docker-hub-creds
             - heroku-creds
 
 jobs:
-  build-push:
+  build:
     machine:
       image: ubuntu-2004:202010-01
     steps:
@@ -27,10 +32,27 @@ jobs:
       - run: |
           TAG=0.1.$CIRCLE_BUILD_NUM
           docker build . -t $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH-$TAG
+          docker save $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH-$TAG | gzip > docker_image.tar.gz
+          ls -sh docker_image.tar.gz
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - docker_image.tar.gz
+
+  deploy:
+    machine:
+      image: ubuntu-2004:202010-01
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run: |
+          TAG=0.1.$CIRCLE_PREVIOUS_BUILD_NUM
+          gzip -t docker_image.tar.gz -v
+          docker load -i docker_image.tar.gz
+          rm -rvf docker_image.tar.gz && ls -a
           echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
           docker push $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH-$TAG
           sudo apt-get -qq update && sudo apt-get -qq install aria2
-          mkdir env && cd env
           echo 'https://docs.google.com/uc?export=download&id='$ENV_TAR_FILEID | aria2c --input-file=-
           tar -xvf env.tar.xz && rm -rvf env.tar.xz
           echo "FROM $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH-$TAG
@@ -39,16 +61,22 @@ jobs:
           " >> Dockerfile
           cat Dockerfile
           echo "Dockerfile created for $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH-$TAG"
-          heroku container:login
           docker build . -t registry.heroku.com/$CIRCLE_PROJECT_REPONAME-$CIRCLE_BRANCH/worker
+          heroku container:login
           docker push registry.heroku.com/$CIRCLE_PROJECT_REPONAME-$CIRCLE_BRANCH/worker
 
   release:
     machine:
       image: ubuntu-2004:202010-01
     steps:
+      - attach_workspace:
+          at: ~/project
       - run: |
-          TAG=0.1.$CIRCLE_PREVIOUS_BUILD_NUM
+          BUILD_NUMBER=`expr $CIRCLE_PREVIOUS_BUILD_NUM - 1`
+          TAG=0.1.$BUILD_NUMBER
+          gzip -t docker_image.tar.gz -v
+          docker load -i docker_image.tar.gz
+          rm -rvf docker_image.tar.gz && ls -a
           echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
           docker pull $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH-$TAG
           docker tag $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH-$TAG $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH-latest
