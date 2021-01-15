@@ -1,4 +1,5 @@
-from bot import aria2, download_dict_lock
+from bot import aria2, download_dict_lock, STOP_DUPLICATE_MIRROR
+from bot.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
 from bot.helper.ext_utils.bot_utils import *
 from .download_helper import DownloadHelper
 from bot.helper.mirror_utils.status_utils.aria_download_status import AriaDownloadStatus
@@ -15,7 +16,22 @@ class AriaDownloadHelper(DownloadHelper):
 
     @new_thread
     def __onDownloadStarted(self, api, gid):
+        sleep(1)
         LOGGER.info(f"onDownloadStart: {gid}")
+        dl = getDownloadByGid(gid)
+        download = api.get_download(gid)
+        self.name = download.name
+        sname = download.name
+        gdrive = GoogleDriveHelper(None)
+        smsg, button = gdrive.drive_list(sname)
+        if STOP_DUPLICATE_MIRROR:
+            if smsg:
+                dl.getListener().onDownloadError(
+                    f'😡😡File is already available in drive. You should have search before mirror any file. You might get ban if you do this again. This download has been stopped.\n\n')
+                print(dl.getListener())
+                sendMarkup(" Here are the search results:👇👇", dl.getListener().bot, dl.getListener().update, button)
+                aria2.remove([download])
+            return
         update_all_messages()
 
     def __onDownloadComplete(self, api: API, gid):
@@ -32,7 +48,8 @@ class AriaDownloadHelper(DownloadHelper):
             update_all_messages()
             LOGGER.info(f'Changed gid from {gid} to {new_gid}')
         else:
-            if dl: threading.Thread(target=dl.getListener().onDownloadComplete).start()
+            if dl:
+                threading.Thread(target=dl.getListener().onDownloadComplete).start()
 
     @new_thread
     def __onDownloadPause(self, api, gid):
@@ -63,8 +80,7 @@ class AriaDownloadHelper(DownloadHelper):
                                       on_download_stop=self.__onDownloadStopped,
                                       on_download_complete=self.__onDownloadComplete)
 
-
-    def add_download(self, link: str, path,listener):
+    def add_download(self, link: str, path, listener):
         if is_magnet(link):
             download = aria2.add_magnet(link, {'dir': path})
         else:
