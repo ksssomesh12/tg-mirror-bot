@@ -2,7 +2,7 @@ import shutil, psutil
 import signal
 import pickle
 
-from os import execl, path, remove
+from os import execl, path, remove, mkdir, environ
 from sys import executable
 import time
 
@@ -111,6 +111,11 @@ def main():
             restart_message = pickle.load(status)
         restart_message.edit_text("Restarted Successfully!")
         remove('restart.pickle')
+
+    def getConfig(name: str):
+        return environ[name]
+    DOWNLOAD_DIR = getConfig('DOWNLOAD_DIR')
+    mkdir(DOWNLOAD_DIR)
 
     start_handler = CommandHandler(BotCommands.StartCommand, start,
                                    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
