@@ -3,6 +3,20 @@ version: 2.1
 workflows:
   build-release:
     jobs:
+      - build-mega-sdk:
+          filters:
+            branches:
+              only: master
+          context:
+            - docker-hub-creds
+      - push-mega-sdk:
+          filters:
+            branches:
+              only: master
+          requires:
+            - build-mega-sdk
+          context:
+            - docker-hub-creds
       - build-push:
           context:
             - docker-hub-creds
@@ -19,6 +33,27 @@ workflows:
             - heroku-creds
 
 jobs:
+  build-mega-sdk:
+    machine:
+      image: ubuntu-2004:202010-01
+    steps:
+      - checkout
+      - run: |
+          cd mega_sdk
+          docker build . -t $CIRCLE_PROJECT_USERNAME/$MEGA_SDK_REPONAME:0.$CIRCLE_BUILD_NUM
+          echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
+          docker push $CIRCLE_PROJECT_USERNAME/$MEGA_SDK_REPONAME:0.$CIRCLE_BUILD_NUM
+
+  push-mega-sdk:
+    machine:
+      image: ubuntu-2004:202010-01
+    steps:
+      - run: |
+          echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
+          docker pull $CIRCLE_PROJECT_USERNAME/$MEGA_SDK_REPONAME:0.$CIRCLE_PREVIOUS_BUILD_NUM
+          docker tag $CIRCLE_PROJECT_USERNAME/$MEGA_SDK_REPONAME:0.$CIRCLE_PREVIOUS_BUILD_NUM $CIRCLE_PROJECT_USERNAME/$MEGA_SDK_REPONAME:latest
+          docker push $CIRCLE_PROJECT_USERNAME/$MEGA_SDK_REPONAME:latest
+
   build-push:
     machine:
       image: ubuntu-2004:202010-01
