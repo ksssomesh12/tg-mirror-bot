@@ -84,20 +84,6 @@ except KeyError as e:
     exit(1)
 
 try:
-    MEGA_API_KEY = getConfig('MEGA_API_KEY')
-except KeyError:
-    logging.warning('MEGA API KEY not provided!')
-    MEGA_API_KEY = None
-try:
-    MEGA_EMAIL_ID = getConfig('MEGA_EMAIL_ID')
-    MEGA_PASSWORD = getConfig('MEGA_PASSWORD')
-    if len(MEGA_EMAIL_ID) == 0 or len(MEGA_PASSWORD) == 0:
-        raise KeyError
-except KeyError:
-    logging.warning('MEGA Credentials not provided!')
-    MEGA_EMAIL_ID = None
-    MEGA_PASSWORD = None
-try:
     INDEX_URL = getConfig('INDEX_URL')
     if len(INDEX_URL) == 0:
         INDEX_URL = None
@@ -152,15 +138,6 @@ try:
         USE_SERVICE_ACCOUNTS = False
 except KeyError:
     USE_SERVICE_ACCOUNTS = False
-
-try:
-    BLOCK_MEGA_LINKS = getConfig('BLOCK_MEGA_LINKS')
-    if BLOCK_MEGA_LINKS.lower() == 'true':
-        BLOCK_MEGA_LINKS = True
-    else:
-        BLOCK_MEGA_LINKS = False
-except KeyError:
-    BLOCK_MEGA_LINKS = False
 
 try:
     SHORTENER = getConfig('SHORTENER')

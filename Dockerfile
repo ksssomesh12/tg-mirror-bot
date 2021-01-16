@@ -1,9 +1,9 @@
-FROM ksssomesh12/mega-sdk:latest
-ENV DEBIAN_FRONTEND="noninteractive"
+FROM ubuntu:20.04
 WORKDIR /usr/src/app
 RUN chmod 777 /usr/src/app
-RUN apt-add-repository non-free && apt-get -qq update && apt-get -qq install -y p7zip-full p7zip-rar aria2 curl \
-    pv jq ffmpeg locales python3-lxml && apt-get purge -y software-properties-common && rm -rf /var/lib/apt/lists/*
+ENV DEBIAN_FRONTEND="noninteractive"
+RUN apt-get -qq update && apt-get -qq install -y tzdata curl aria2 python3 python3-pip \
+    locales python3-lxml pv jq ffmpeg p7zip-full p7zip-rar && rm -rf /var/lib/apt/lists/*
 COPY requirements.txt .
 COPY extract /usr/local/bin
 RUN chmod +x /usr/local/bin/extract
