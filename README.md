@@ -28,7 +28,6 @@ A Telegram Bot written in Python language to mirror files on the internet to Goo
 - Shortener Support
 - Service Account Support
 - Mirror 'youtube-dl' Supported Links
-- Mirror Files on MEGA.NZ (Not Very Stable)
 
 ## Supported Archive File Types
 ```
@@ -90,11 +89,7 @@ python3 generate_telegraph_token.py
 
 - **IS_TEAM_DRIVE** : Set to "true" if GDRIVE_FOLDER_ID is from a Team Drive else set to "false" or leave it empty.
 - **USE_SERVICE_ACCOUNTS**: Whether to use service accounts or not. For this to work see  "Using service accounts" section below.
-- **MEGA_API_KEY**: API Key of your MEGA.NZ account. Get it from [MEGA SDK Page](https://mega.nz/sdk).
-- **MEGA_EMAIL_ID**: Email ID of your MEGA.NZ account.
-- **MEGA_PASSWORD**: Password of your MEGA.NZ account.
 - **STOP_DUPLICATE_MIRROR**: Set this to "true", if you want to check for duplicate files (using file name, and not file hash) in Google Drive matching the requested download and stop the download if found any.
-- **BLOCK_MEGA_LINKS**: Set this to "true", if you want to disable downloading of MEGA.NZ files.
 - **INDEX_URL** : Refer to [GDIndex repo](https://github.com/maple3142/GDIndex/). The URL should not have any trailing '/'.
 - **SHORTENER**: URL of the Shortener.
 - **SHORTENER_API**: API Key of the Shortener.
