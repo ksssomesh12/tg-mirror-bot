@@ -4,20 +4,16 @@ workflows:
   build-release:
     jobs:
       - build-mega-sdk:
-          filters:
-            branches:
-              only: master
           context:
             - docker-hub-creds
       - push-mega-sdk:
-          filters:
-            branches:
-              only: master
           requires:
             - build-mega-sdk
           context:
             - docker-hub-creds
       - build-push:
+          requires:
+            - push-mega-sdk
           context:
             - docker-hub-creds
             - heroku-creds
