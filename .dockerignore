@@ -1,5 +1,7 @@
 .circleci
 .git
 .idea
+deploy_heroku
+mega_sdk
 venv
 .gitignore
