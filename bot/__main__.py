@@ -116,6 +116,7 @@ def main():
         return environ[name]
     DOWNLOAD_DIR = getConfig('DOWNLOAD_DIR')
     mkdir(DOWNLOAD_DIR)
+    LOGGER.info(f'Created Directory {DOWNLOAD_DIR}')
 
     start_handler = CommandHandler(BotCommands.StartCommand, start,
                                    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
