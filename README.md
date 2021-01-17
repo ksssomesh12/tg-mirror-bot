@@ -209,21 +209,26 @@ heroku ps --app your-mirror-bot
 ```
 
 # Bot Commands:
-- **help** - To get the help message
+
+- **start** - Start the bot
 - **mirror** - Mirror the provided link to Google Drive
 - **unzipmirror** - Mirror the provided link and if the file is in archive format, it is extracted and then uploaded to Google Drive
 - **tarmirror** - Mirror the provided link and upload in archive format (.tar) to Google Drive
-- **watch** - Mirror through 'youtube-dl' to Google Drive
-- **tarwatch** - Mirror through 'youtube-dl' and upload in archive format (.tar) to Google Drive
 - **cancel** - Reply with this command to the source message, and the download will be cancelled
 - **cancelall** - Cancels all running tasks (downloads, uploads, archiving, unarchiving)
-- **status** - Shows the status of all downloads and uploads in progress
 - **list** - Searches the Google Drive folder for any matches with the search term and presents the search results in a Telegraph page
-- **clone** - Copy folders in Google Drive (owned by someone else) to your Google Drive 
-- **del** - Delete files in Google Drive matching the given string
+- **status** - Shows the status of all downloads and uploads in progress
+- **authorize** - Authorize a group chat or, a specific user to use the bot
+- **unauthorize** - Unauthorize a group chat or, a specific user to use the bot
+- **ping** - Ping the bot
+- **restart** - Restart the bot
 - **stats** - Shows the stats of the machine that the bot is hosted on
-- **authorize** - Authorize a group chat or, a specific user to use the bot (can only be used by the bot owner)
+- **help** - To get the help message
 - **log** - Sends the log file of the bot (can be used to analyse crash reports, if any)
+- **clone** - Clone folders in Google Drive (owned by someone else) to your Google Drive 
+- **watch** - Mirror through 'youtube-dl' to Google Drive
+- **tarwatch** - Mirror through 'youtube-dl' and upload in archive format (.tar) to Google Drive
+- **del** - Delete files in Google Drive matching the given string
 
 **NOTE:** The above listed command descriptions can be copied and pasted in 'edit bot commands' section, when editing the bot settings with [@BotFather](https://t.me/botfather).
 

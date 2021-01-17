@@ -2,12 +2,12 @@ import shutil, psutil
 import signal
 import pickle
 
-from os import execl, path, remove, mkdir, environ
+from os import execl, path, remove, mkdir
 from sys import executable
 import time
 
 from telegram.ext import CommandHandler, run_async
-from bot import dispatcher, updater, botStartTime
+from bot import dispatcher, updater, botStartTime, DOWNLOAD_DIR
 from bot.helper.ext_utils import fs_utils
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import *
@@ -43,7 +43,7 @@ def stats(update, context):
 @run_async
 def start(update, context):
     start_string = f'''
-This is a bot which can mirror all your links to Google drive!
+A Bot to mirror files on the internet to Google Drive.
 Type /{BotCommands.HelpCommand} to get a list of available commands
 '''
     sendMessage(start_string, context.bot, update)
@@ -51,7 +51,7 @@ Type /{BotCommands.HelpCommand} to get a list of available commands
 
 @run_async
 def restart(update, context):
-    restart_message = sendMessage("Restarting, Please wait!", context.bot, update)
+    restart_message = sendMessage("Restarting, Please Wait!", context.bot, update)
     # Save restart message object in order to reply to it after restarting
     fs_utils.clean_all()
     with open('restart.pickle', 'wb') as status:
@@ -75,7 +75,7 @@ def log(update, context):
 @run_async
 def bot_help(update, context):
     help_string = f'''
-/{BotCommands.HelpCommand}: To get the help message
+/{BotCommands.StartCommand} Start the bot
 
 /{BotCommands.MirrorCommand} Mirror the provided link to Google Drive
 
@@ -83,21 +83,35 @@ def bot_help(update, context):
 
 /{BotCommands.TarMirrorCommand} Mirror the provided link and upload in archive format (.tar) to Google Drive
 
+/{BotCommands.CancelMirrorCommand} Reply with this command to the source message, and the download will be cancelled
+
+/{BotCommands.CancelAllCommand} Cancels all running tasks (downloads, uploads, archiving, unarchiving)
+
+/{BotCommands.ListCommand} Searches the Google Drive folder for any matches with the search term and presents the search results in a Telegraph page
+
+/{BotCommands.StatusCommand} Shows the status of all downloads and uploads in progress
+
+/{BotCommands.AuthorizeCommand} Authorize a group chat or, a specific user to use the bot
+
+/{BotCommands.UnAuthorizeCommand} Unauthorize a group chat or, a specific user to use the bot
+
+/{BotCommands.PingCommand} Ping the bot
+
+/{BotCommands.RestartCommand} Restart the bot
+
+/{BotCommands.StatsCommand} Shows the stats of the machine that the bot is hosted on
+
+/{BotCommands.HelpCommand}: To get the help message
+
+/{BotCommands.LogCommand} Sends the log file of the bot (can be used to analyse crash reports, if any)
+
+/{BotCommands.CloneCommand} Clone folders in Google Drive (owned by someone else) to your Google Drive
+
 /{BotCommands.WatchCommand} Mirror through 'youtube-dl' to Google Drive
 
 /{BotCommands.TarWatchCommand} Mirror through 'youtube-dl' and upload in archive format (.tar) to Google Drive
 
-/{BotCommands.CancelMirror} : Reply with this command to the source message, and the download will be cancelled
-
-/{BotCommands.StatusCommand}: Shows the status of all downloads and uploads in progress
-
-/{BotCommands.ListCommand} Searches the Google Drive folder for any matches with the search term and presents the search results in a Telegraph page
-
-/{BotCommands.StatsCommand}: Shows the stats of the machine that the bot is hosted on
-
-/{BotCommands.AuthorizeCommand}: Authorize a group chat or, a specific user to use the bot (can only be used by the bot owner)
-
-/{BotCommands.LogCommand}: Sends the log file of the bot (can be used to analyse crash reports, if any)
+/{BotCommands.DeleteCommand} Delete files in Google Drive matching the given string
 
 '''
     sendMessage(help_string, context.bot, update)
@@ -112,11 +126,7 @@ def main():
         restart_message.edit_text("Restarted Successfully!")
         remove('restart.pickle')
 
-    def getConfig(name: str):
-        return environ[name]
-    DOWNLOAD_DIR = getConfig('DOWNLOAD_DIR')
     mkdir(DOWNLOAD_DIR)
-    LOGGER.info(f'Created Directory {DOWNLOAD_DIR}')
 
     start_handler = CommandHandler(BotCommands.StartCommand, start,
                                    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
