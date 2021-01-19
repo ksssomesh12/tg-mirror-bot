@@ -12,5 +12,5 @@ COPY netrc /root/.netrc
 COPY . .
 RUN chmod +x aria.sh
 RUN locale-gen en_US.UTF-8
-ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
+ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8' TZ='Asia/Kolkata'
 CMD ["bash","start.sh"]
