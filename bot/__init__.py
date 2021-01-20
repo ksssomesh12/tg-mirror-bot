@@ -8,6 +8,8 @@ import telegram.ext as tg
 from dotenv import load_dotenv
 import socket
 import faulthandler
+from bot.helper import dynamic_config
+
 faulthandler.enable()
 
 socket.setdefaulttimeout(600)
@@ -21,6 +23,12 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     handlers=[logging.FileHandler('log.txt'), logging.StreamHandler()],
                     level=logging.INFO)
 
+if os.path.exists('dynamic_config.env'):
+    os.environ['DYNAMIC_CONFIG'] = 'true'
+else:
+    os.environ['DYNAMIC_CONFIG'] = 'false'
+
+dynamic_config.helper()
 load_dotenv('config.env')
 
 Interval = []

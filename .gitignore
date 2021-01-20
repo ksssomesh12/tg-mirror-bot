@@ -1,4 +1,5 @@
 config.env
+dynamic_config.env
 credentials.json
 token.pickle
 authorized_chats.txt
