@@ -34,7 +34,7 @@ def helper():
         file_list = ['config.env', 'credentials.json', 'token.pickle']
         for i in file_list:
             rm_dl(i)
-        LOGGER.info(f'Downloaded Config Files: {file_list}')
+        LOGGER.info(f'Downloaded Config Files: \n{file_list}')
     else:
         LOGGER.info('Using Static Config, Instead of Dynamic Config')
         pass
