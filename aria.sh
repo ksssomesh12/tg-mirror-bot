@@ -1,3 +1,4 @@
+#!/bin/bash
 export MAX_DOWNLOAD_SPEED=0
 export MAX_CONCURRENT_DOWNLOADS=3
 TRACKER_LIST=$(curl -Ns https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_all.txt | awk '$1' | tr '\n' ',')

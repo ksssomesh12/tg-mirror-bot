@@ -9,8 +9,7 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 RUN locale-gen en_US.UTF-8
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8' TZ='Asia/Kolkata'
 COPY extract /usr/local/bin
-RUN chmod +x /usr/local/bin/extract
 COPY netrc /root/.netrc
 COPY . .
-RUN chmod +x aria.sh
-CMD ["bash","start.sh"]
+RUN chmod +x aria.sh start.sh /usr/local/bin/extract
+CMD ["./start.sh"]
