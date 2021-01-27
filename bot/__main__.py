@@ -125,6 +125,7 @@ def main():
         with open('restart.pickle', 'rb') as status:
             restart_message = pickle.load(status)
         restart_message.edit_text("Restarted Successfully!")
+        LOGGER.info('Restarted Successfully!')
         remove('restart.pickle')
 
     start_handler = CommandHandler(BotCommands.StartCommand, start,
