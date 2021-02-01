@@ -44,6 +44,23 @@ A Telegram Bot written in Python language to mirror files on the internet to Goo
 ZIP RAR TAR 7Z ISO WIM CAB GZIP BZIP2 APM ARJ CHM CPIO CramFS DEB DMG FAT HFS LZH LZMA LZMA2 MBR MSI MSLZ NSIS NTFS RPM SquashFS UDF VHD XAR Z
 ```
 
+# Development Status:
+
+## To-Dos
+
+- Sync 'token.pickle' to Google Drive.
+- Add option to select files for torrent/magnet downloads.
+- Edit values of environment variables in 'config.env' from within the bot.
+- Add Inline Keyboard Buttons for editing 'config.env' from within the bot.
+
+**NOTE:** All the above to-dos are aimed at achieving zero human-intervention after initial deploy to Heroku.
+
+## Info of Branches
+
+- **master** : most stable environment for production deploys.
+- **staging** : testing new features, fixes or better implementations of already existing ones.
+- **dev** : major feature updates that are under development - currently support for 'mega-dl'.
+
 # Deploying:
 
 ## Prerequisites
