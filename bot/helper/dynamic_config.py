@@ -26,6 +26,7 @@ def helper():
                 time.sleep(0.1)
                 retry_status += 1
             if os.path.exists(f'{file_name}'):
+                LOGGER.info(f"Downloaded '{i}'")
                 pass
             else:
                 LOGGER.error(f'Config File Missing: {file_name} ...\n Exiting...')
@@ -34,7 +35,6 @@ def helper():
         file_list = ['config.env', 'credentials.json', 'token.pickle']
         for i in file_list:
             rm_dl(i)
-        LOGGER.info(f'Downloaded Config Files: {file_list}')
     else:
         LOGGER.info('Using Static Config, Instead of Dynamic Config')
         pass

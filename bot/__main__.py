@@ -2,12 +2,12 @@ import shutil, psutil
 import signal
 import pickle
 
-from os import execl, path, remove, mkdir
+from os import execl, path, remove
 from sys import executable
 import time
 
 from telegram.ext import CommandHandler, run_async
-from bot import dispatcher, updater, botStartTime, DOWNLOAD_DIR
+from bot import dispatcher, updater, botStartTime
 from bot.helper.ext_utils import fs_utils
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import *
@@ -52,6 +52,7 @@ Type /{BotCommands.HelpCommand} to get a list of available commands
 @run_async
 def restart(update, context):
     restart_message = sendMessage("Restarting, Please Wait!", context.bot, update)
+    LOGGER.info(f'Restarting the Bot...')
     # Save restart message object in order to reply to it after restarting
     fs_utils.clean_all()
     with open('restart.pickle', 'wb') as status:
@@ -124,9 +125,8 @@ def main():
         with open('restart.pickle', 'rb') as status:
             restart_message = pickle.load(status)
         restart_message.edit_text("Restarted Successfully!")
+        LOGGER.info('Restarted Successfully!')
         remove('restart.pickle')
-
-    mkdir(DOWNLOAD_DIR)
 
     start_handler = CommandHandler(BotCommands.StartCommand, start,
                                    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
