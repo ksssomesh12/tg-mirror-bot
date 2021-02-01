@@ -14,9 +14,13 @@ A Telegram Bot written in Python language to mirror files on the internet to Goo
     All credits goes to the maintainers of the above repositories.
 
 
-- This repository utilises torrent trackers from [ngosang's trackerslist](https://github.com/ngosang/trackerslist) repository.
+- Few useful additional features have been implemented on top of them.
+- This repository utilises trackers for torrent/magnet downloads from [Trackerslist Website](https://trackerslist.com).
 
 # Supported Features:
+
+## From Source Repos
+
 - Mirror Torrents
 - Mirror Direct Links
 - Mirror Telegram Files
@@ -29,33 +33,35 @@ A Telegram Bot written in Python language to mirror files on the internet to Goo
 - Service Account Support
 - Mirror 'youtube-dl' Supported Links
 
+## Additional Features
+
+- Dynamic Config Support:
+  
+  To Facilitate easier and streamlined experience for editing config files.
+
 ## Supported Archive File Types
 ```
-ZIP RAR TAR 7z ISO WIM CAB GZIP BZIP2 APM ARJ CHM CPIO CramFS DEB DMG FAT HFS LZH LZMA LZMA2 MBR MSI MSLZ NSIS NTFS RPM SquashFS UDF VHD XAR Z
+ZIP RAR TAR 7Z ISO WIM CAB GZIP BZIP2 APM ARJ CHM CPIO CramFS DEB DMG FAT HFS LZH LZMA LZMA2 MBR MSI MSLZ NSIS NTFS RPM SquashFS UDF VHD XAR Z
 ```
 
 # Deploying:
 
 ## Prerequisites
 
-- Install Python3 (debian based distros).
+- Install Python3.
 ```
 sudo apt install python3
 ```
 
-- Install Docker by following the [Official Docker Docs](https://docs.docker.com/engine/install/debian/).
-
-- Install dependencies for running the setup scripts.
-```
-pip3 install -r requirements-cli.txt
-```
-
 ## Cloning and Setting Up Config File
 
-- Clone the Repo:
+- Download and Extract the [Latest Release Package](https://github.com/ksssomesh12/tg-mirror-bot/releases):
 ```
-git clone https://github.com/ksssomesh12/tg-mirror-bot
-cd tg-mirror-bot
+mkdir ~/Downloads/deploy_heroku
+mv ~/Downloads/deploy_release_v* ~/Downloads/deploy_heroku
+cd ~/Downloads/deploy_heroku
+tar xzvf deploy_release_v*
+rm -v deploy_release_v*
 ```
 
 - Copy and Edit the Config file:
@@ -88,11 +94,11 @@ python3 generate_telegraph_token.py
 ### Optional Fields (Leave empty if unsure)
 
 - **IS_TEAM_DRIVE** : Set to "true" if GDRIVE_FOLDER_ID is from a Team Drive else set to "false" or leave it empty.
-- **USE_SERVICE_ACCOUNTS**: Whether to use service accounts or not. For this to work see  "Using service accounts" section below.
-- **STOP_DUPLICATE_MIRROR**: Set this to "true", if you want to check for duplicate files (using file name, and not file hash) in Google Drive matching the requested download and stop the download if found any.
+- **USE_SERVICE_ACCOUNTS** : Whether to use service accounts or not. For this to work see  "Using service accounts" section below.
+- **STOP_DUPLICATE_MIRROR** : Set this to "true", if you want to check for duplicate files (using file name, and not file hash) in Google Drive matching the requested download and stop the download if found any.
 - **INDEX_URL** : Refer to [GDIndex repo](https://github.com/maple3142/GDIndex/). The URL should not have any trailing '/'.
-- **SHORTENER**: URL of the Shortener.
-- **SHORTENER_API**: API Key of the Shortener.
+- **SHORTENER** : URL of the Shortener.
+- **SHORTENER_API** : API Key of the Shortener.
 
         Supported Shorteners:
         
@@ -112,100 +118,102 @@ python3 generate_telegraph_token.py
 
 - Visit the [Google Cloud Console](https://console.developers.google.com/apis/credentials).
 - Go to the OAuth Consent tab, fill it, and save.
-- Go to the Credentials tab and click Create Credentials -> OAuth Client ID
+- Go to the Credentials tab and click Create Credentials -> OAuth Client ID.
 - Choose Other and Create.
 - Use the download button to download your credentials.
 - Move that file to the root of mirror-bot, and rename it to 'credentials.json'.
-- Visit [Google API page](https://console.developers.google.com/apis/library)
+- Visit [Google API page](https://console.developers.google.com/apis/library).
 - Search for Drive and enable it if it is disabled.
 - Finally, run the script to generate the token file (token.pickle) for Google Drive:
 ```
 pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
 python3 generate_drive_token.py
 ```
-## Deploying Locally using Docker
 
-- Start Docker Daemon (skip if already running):
-```
-sudo dockerd
-```
-- Build Docker Image:
-```
-sudo docker build . -t tg-mirror-bot
-```
-- Run the Image:
-```
-sudo docker run tg-mirror-bot
-```
+## Dynamic Config (optional)
 
-# Deploy to Heroku Manually:
+### Prerequisites
 
-## Creating a Private Repo
+- 'config files' refers to these 3 files:
 
-- Create your GitHub account (skip if you already have one).
-- Open [this link](https://github.com/new/import) to import this repo to a new repo that will be created and owned by you.
-- Clone this existing repo to your new private repo by pasting [this repo's url](https://github.com/ksssomesh12/tg-mirror-bot) in the clone url field and enter any name for your repo (for our reference, your-private-repo).
-- Clone your private repo locally and delete the '.gitignore' file:
+      config.env
+      credentials.json
+      token.pickle
+- These config files can be generated by following the two above mentioned sections.
+- Create a new folder in your Google Drive, irrespective of the folder you use for uploading files with this bot (no constraints).
+- Change the permissions of this newly created folder to 'Anyone on the Internet with this link can view'.
+- Upload the config files to this newly created folder.
+- Copy the FileIDs of these config files.
+- Setup the 'dynamic_config.env' file:
 ```
-git clone https://github.com/username/your-private-repo
-cd your-private-repo
-rm -rfv .gitignore
+cp dynamic_config_sample.env dynamic_config.env
+nano dynamic_config.env
 ```
 
-**NOTE:** Replace 'username' with your GitHub username and 'your-private-repo' with the name of your private repo. Authenticate into GitHub, if prompted. If you have enabled 2FA in GitHub, you may not be able to authenticate. In that case, create a Personal Access Token, with 'repo-only' access, under Developer Settings in GitHub Settings and use it in the password field to authenticate in git.
-- Commit and push the changes made to the remote GitHub repo:
-```
-git add .
-git commit -m "removed gitignore file"
-git push -f origin master
-```
-- Now, set up the config file by following [this section](https://github.com/ksssomesh12/tg-mirror-bot#Cloning-and-Setting-Up-Config-File) and get the OAuth credential file by following [this section](https://github.com/ksssomesh12/tg-mirror-bot#Getting-Google-OAuth-API-Credential-File).
+### Reference
 
-**NOTE:** The cloned repo's visibility must be set to private, as this method requires the sensitive files (credentials.json, config.env, token.pickle, authorized_chats.txt, log.txt) containing personal data to be in the repo to be successfully deployed on Heroku; setting repo's visibility to 'public' might compromise personal data. Alternatively, you can set up a git repo on your local machine by cloning this repo and sync it with Heroku Git remote repo.
+- **CONFIG_ENV** : Google Drive FileID for 'config.env' file.
+- **CREDENTIALS_JSON** : Google Drive FileID for 'credentials.json' file.
+- **TOKEN_PICKLE** : Google Drive FileID for 'token.pickle' file.
+- **DL_WAIT_TIME** : Time to wait for aria2 to download the config files. By default it's set to '10' seconds, which is more than enough for deploying the bot to Heroku.
+
+**NOTE:** If 'DL_WAIT_TIME' lapses, and the config files are not downloaded completely, the bot exits with exit code (1).
+
+# Deploy to Heroku:
 
 ## Creating a Heroku App
 
-- Create a [free Heroku account](https://id.heroku.com/signup/login).
+- Create a [free Heroku Account](https://id.heroku.com/signup/login).
 - Install Heroku CLI:
 ```
 sudo snap install --classic heroku
 ```
-- Login into your Heroku account:
+- Login into your Heroku Account:
 ```
 heroku login
 ```
-- Visit [Heroku Dashboard](https://dashboard.heroku.com) and create a new app with any name(for our reference, your-mirror-bot) and with any region you prefer, for your app to be served from.
-- In the Deploy tab of your app dashboard, select  GitHub in 'Deployment Method' and connect and authorize your Heroku account to access your public and private repos on GitHub.
-- Search and select your private repo to connect to your Heroku app.
-- (Optional) In auto deploy section, select a repo branch (master) to auto deploy the app from, if any new commit is made to the selected branch on GitHub.
-- In manual deploy section, select a repo branch (master) to deploy the app and hit the Deploy button.
-- Wait for the build to finish and ignore any errors that popped up during the build process.
-- Change the stack for the app using Heroku CLI:
+- Visit [Heroku Dashboard](https://dashboard.heroku.com) and create a new app with any name (for our reference, your-mirror-bot) and with any region you prefer, for your app to be served from.
+- In the Deploy tab of your app dashboard, select  'Heroku Git' in Deployment Method.
+- Change the Stack for the App using Heroku CLI:
 ```
 heroku stack:set container --app your-mirror-bot
 ```
-- Now, go to the manual deploy section in the Deploy tab of your Heroku app dashboard and hit the Deploy button.
-- Check for any errors in the build process and wait until it completes.
+- Initialise the project files as a Git Repository, push the Repo to 'Heroku Git' and build the Docker Image:
+```
+cd ~/Downloads/deploy_heroku
+git init
+git add .
+git commit -m "initial commit"
+heroku git:remote --app your-mirror-bot
+git push heroku master
+```
+- If the Docker Image Build succeeds, then, your push to the remote repository will succeed, otherwise, your push to the remote repository is rejected as the Docker Image Build fails.
 
 ## Run/Terminate the App
+
 You can run/terminate the app by allocating/deallocating dynos to the app.
 
-- Using Dashboard:
-In the app dashboard, under resources tab, use the 'Edit dyno formation' button in Dynos section to change the working state of the app.
+### Using Dashboard
 
-- Using CLI:
+- In the app dashboard, under resources tab, use the 'Edit Dyno Formation' button in Dynos section to change the working state of the app.
 
-To Run:
+### Using CLI
+
+- To Run:
 ```
 heroku ps:scale worker=1 --app your-mirror-bot
 ```
-To Terminate:
+- To Terminate:
 ```
 heroku ps:scale worker=0 --app your-mirror-bot
 ```
-To Check Status:
+- To Check Status:
 ```
 heroku ps --app your-mirror-bot
+```
+- To Tail App Logs:
+```
+heroku logs --tail --app your-mirror-bot
 ```
 
 # Bot Commands:
@@ -228,50 +236,6 @@ heroku ps --app your-mirror-bot
 - **clone** - Clone folders in Google Drive (owned by someone else) to your Google Drive 
 - **watch** - Mirror through 'youtube-dl' to Google Drive
 - **tarwatch** - Mirror through 'youtube-dl' and upload in archive format (.tar) to Google Drive
-- **del** - Delete files in Google Drive matching the given string
+- **delete** - Delete files in Google Drive matching the given string
 
 **NOTE:** The above listed command descriptions can be copied and pasted in 'edit bot commands' section, when editing the bot settings with [@BotFather](https://t.me/botfather).
-
-# Using Service Accounts:
-
-[What is a service account?](https://cloud.google.com/iam/docs/service-accounts)
-
-Many thanks to [AutoRClone](https://github.com/xyou365/AutoRclone) for the scripts.
-
-**NOTE:** Using service accounts is only recommended while uploading to a Team Drive.
-
-## Generating Service Accounts
-
-Let us create only the service accounts that we need.
-
-    Prerequisite:
-    
-    > In 'config.env' file, set the below environment variable,
-    
-          USE_SERVICE_ACCOUNTS = "true"
-
-**WARNING:** Abuse of this feature is not the aim of this project, and we do **NOT** recommend that you make a lot of projects, just one project and 100 sa allow you plenty of use, it is also possible that over abuse might get your projects banned by google.
-
-**NOTE:** 1 service account can copy around 750 GB/day. 1 project can make 100 service accounts so that's 75 TB/day, for most users this should easily suffice.
-```
-python3 gen_sa_accounts.py --quick-setup 1 --new-only
-```
-A folder named accounts will be created which will contain keys for the service accounts
-
-**NOTE:** If you have created SAs in past from this script, you can also just re-download the keys by running:
-```
-python3 gen_sa_accounts.py --download-keys project_id
-```
-
-## Add all the service accounts to the Team Drive
-- Run:
-```
-python3 add_to_team_drive.py -d SharedTeamDriveSrcID
-```
-
-# 'youtube-dl' Authentication using '.netrc' file:
-For using your premium accounts in youtube-dl, edit the netrc file (in the root directory of this repository) according to following format:
-```
-machine host login username password my_youtube_password
-```
-where host is the name of extractor (e.g. youtube, twitch). Multiple accounts of different hosts can be added each separated by a new line.
