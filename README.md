@@ -237,5 +237,6 @@ heroku logs --tail --app your-mirror-bot
 - **watch** - Mirror through 'youtube-dl' to Google Drive
 - **tarwatch** - Mirror through 'youtube-dl' and upload in archive format (.tar) to Google Drive
 - **delete** - Delete files in Google Drive matching the given string
+- **config** - Edit 'config.env' file
 
 **NOTE:** The above listed command descriptions can be copied and pasted in 'edit bot commands' section, when editing the bot settings with [@BotFather](https://t.me/botfather).

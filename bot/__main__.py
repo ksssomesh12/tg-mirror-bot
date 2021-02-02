@@ -74,6 +74,12 @@ def log(update, context):
 
 
 @run_async
+def config(update, context):
+    with open('config.env', 'r+') as config_env:
+        sendMessage(config_env.read(), context.bot, update)
+
+
+@run_async
 def bot_help(update, context):
     help_string = f'''
 /{BotCommands.StartCommand} Start the bot
@@ -114,6 +120,8 @@ def bot_help(update, context):
 
 /{BotCommands.DeleteCommand} Delete files in Google Drive matching the given string
 
+/{BotCommands.ConfigCommand} Edit 'config.env' file
+
 '''
     sendMessage(help_string, context.bot, update)
 
@@ -139,12 +147,14 @@ def main():
     stats_handler = CommandHandler(BotCommands.StatsCommand,
                                    stats, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
     log_handler = CommandHandler(BotCommands.LogCommand, log, filters=CustomFilters.owner_filter)
+    config_handler = CommandHandler(BotCommands.ConfigCommand, config, filters=CustomFilters.owner_filter)
     dispatcher.add_handler(start_handler)
     dispatcher.add_handler(ping_handler)
     dispatcher.add_handler(restart_handler)
     dispatcher.add_handler(help_handler)
     dispatcher.add_handler(stats_handler)
     dispatcher.add_handler(log_handler)
+    dispatcher.add_handler(config_handler)
     updater.start_polling()
     LOGGER.info("Bot Started!")
     signal.signal(signal.SIGINT, fs_utils.exit_clean_up)
