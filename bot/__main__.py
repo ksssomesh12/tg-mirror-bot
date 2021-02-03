@@ -1,4 +1,5 @@
-import shutil, psutil
+import shutil
+import psutil
 import signal
 import pickle
 
@@ -7,12 +8,13 @@ from sys import executable
 import time
 
 from telegram.ext import CommandHandler, run_async
-from bot import dispatcher, updater, botStartTime
-from bot.helper.ext_utils import fs_utils
-from bot.helper.telegram_helper.bot_commands import BotCommands
-from bot.helper.telegram_helper.message_utils import *
+from . import dispatcher, updater, botStartTime
+from .helper.ext_utils import fs_utils
+from .helper.telegram_helper.bot_commands import BotCommands
+from .helper.telegram_helper.message_utils import *
 from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time
 from .helper.telegram_helper.filters import CustomFilters
+from .helper import config_editor
 from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, delete
 
 
@@ -75,8 +77,7 @@ def log(update, context):
 
 @run_async
 def config(update, context):
-    with open('config.env', 'r+') as config_env:
-        sendMessage(config_env.read(), context.bot, update)
+    config_editor.helper(update, context)
 
 
 @run_async
@@ -140,8 +141,7 @@ def main():
                                    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
     ping_handler = CommandHandler(BotCommands.PingCommand, ping,
                                   filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
-    restart_handler = CommandHandler(BotCommands.RestartCommand, restart,
-                                     filters=CustomFilters.owner_filter)
+    restart_handler = CommandHandler(BotCommands.RestartCommand, restart, filters=CustomFilters.owner_filter)
     help_handler = CommandHandler(BotCommands.HelpCommand,
                                   bot_help, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
     stats_handler = CommandHandler(BotCommands.StatsCommand,
