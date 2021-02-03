@@ -14,7 +14,7 @@ from .helper.telegram_helper.bot_commands import BotCommands
 from .helper.telegram_helper.message_utils import *
 from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time
 from .helper.telegram_helper.filters import CustomFilters
-from .helper import config_editor
+from .helper.config import editor
 from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, delete
 
 
@@ -77,7 +77,7 @@ def log(update, context):
 
 @run_async
 def config(update, context):
-    config_editor.helper(update, context)
+    editor.handler(update, context)
 
 
 @run_async

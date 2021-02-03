@@ -8,7 +8,7 @@ import telegram.ext as tg
 from dotenv import load_dotenv
 import socket
 import faulthandler
-from bot.helper import dynamic_config
+from bot.helper.config import dynamic
 
 faulthandler.enable()
 
@@ -28,7 +28,7 @@ if os.path.exists('dynamic_config.env'):
 else:
     os.environ['DYNAMIC_CONFIG'] = 'false'
 
-dynamic_config.helper()
+dynamic.handler()
 load_dotenv('config.env')
 
 Interval = []

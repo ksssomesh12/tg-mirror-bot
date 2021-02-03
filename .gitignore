@@ -12,3 +12,4 @@ downloads/*
 download/*
 *auth_token.txt
 *.pyc
+Pipfile.lock
