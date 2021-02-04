@@ -6,12 +6,12 @@ from dotenv import load_dotenv
 
 LOGGER = logging.getLogger(__name__)
 aria2 = aria2p.API(aria2p.Client(host="http://localhost", port=6800, secret=""))
+env_dict = {}
 
 
 def handler():
     if os.environ['DYNAMIC_CONFIG'] == 'true':
         load_dotenv('dynamic_config.env')
-        env_dict = {}
 
         def rm_dl(file_name: str):
             env_name = file_name.upper().replace('.', '_')
