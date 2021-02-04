@@ -15,6 +15,8 @@ from .helper.telegram_helper.message_utils import *
 from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time
 from .helper.telegram_helper.filters import CustomFilters
 from .helper.config import editor
+from .helper.config import sync
+from .helper.config.dynamic import env_dict
 from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, delete
 
 
@@ -59,6 +61,10 @@ def restart(update, context):
     fs_utils.clean_all()
     with open('restart.pickle', 'wb') as status:
         pickle.dump(restart_message, status)
+    file_name = 'token.pickle'
+    LOGGER.info("Syncing 'token.pickle' to Google Drive...")
+    result_str = sync.handler(file_name, env_dict[file_name.upper().replace('.', '_')])
+    sendMessage(result_str, context.bot, update)
     execl(executable, executable, "-m", "bot")
 
 

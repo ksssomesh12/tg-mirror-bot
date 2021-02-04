@@ -32,6 +32,6 @@ def handler(file_name: str, file_id: str):
     media_body = MediaFileUpload(filename=file_name, mimetype=file_mimetype, resumable=False)
     service = authorize(token_file='token.pickle')
     file_upload = service.files().update(fileId=file_id, body=file_metadata, media_body=media_body).execute()
-    result_str = f"[{file_name}] [{os.path.getsize(file_name)} bytes] [{file_upload['id']}]"
+    result_str = f"Synced: [{file_name}] [{os.path.getsize(file_name)} bytes] [{file_upload['id']}]"
     LOGGER.info(result_str)
     return result_str
