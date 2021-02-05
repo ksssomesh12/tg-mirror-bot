@@ -23,7 +23,7 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s - %(message)s
                     handlers=[logging.FileHandler('log.txt'), logging.StreamHandler()],
                     level=logging.INFO)
 
-if os.path.exists('dynamic_config.env'):
+if os.path.exists('dynamic.env'):
     os.environ['DYNAMIC_CONFIG'] = 'true'
 else:
     os.environ['DYNAMIC_CONFIG'] = 'false'
