@@ -2,7 +2,7 @@ import os
 import logging
 import time
 import aria2p
-from dotenv import load_dotenv
+from .load import load_env
 from . import reformatter
 
 LOGGER = logging.getLogger(__name__)
@@ -33,9 +33,9 @@ def rm_dl(file_name: str):
 def handler():
     if os.environ['DYNAMIC_CONFIG'] == 'true':
         reformatter.handler('dynamic.env')
-        load_dotenv('dynamic.env')
+        load_env('dynamic.env')
         rm_dl('fileid.env')
-        load_dotenv('fileid.env')
+        load_env('fileid.env')
         file_list = ['config.env', 'credentials.json', 'token.pickle']
         for i in file_list:
             rm_dl(i)

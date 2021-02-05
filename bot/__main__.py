@@ -55,16 +55,16 @@ Type /{BotCommands.HelpCommand} to get a list of available commands
 
 @run_async
 def restart(update, context):
+    file_name = 'token.pickle'
+    sync_message = sendMessage("Syncing 'token.pickle' to Google Drive...", context.bot, update)
+    result_str = sync.handler(file_name, fileIdDict[file_name.upper().replace('.', '_')], usePatch=False)
+    sync_message.edit_text(result_str)
     restart_message = sendMessage("Restarting, Please Wait!", context.bot, update)
     LOGGER.info(f'Restarting the Bot...')
     # Save restart message object in order to reply to it after restarting
     fs_utils.clean_all()
     with open('restart.pickle', 'wb') as status:
         pickle.dump(restart_message, status)
-    file_name = 'token.pickle'
-    LOGGER.info("Syncing 'token.pickle' to Google Drive...")
-    result_str = sync.handler(file_name, fileIdDict[file_name.upper().replace('.', '_')], usePatch=False)
-    sendMessage(result_str, context.bot, update)
     execl(executable, executable, "-m", "bot")
 
 

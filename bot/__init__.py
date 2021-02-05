@@ -5,10 +5,10 @@ import time
 
 import aria2p
 import telegram.ext as tg
-from dotenv import load_dotenv
 import socket
 import faulthandler
 from bot.helper.config import dynamic
+from bot.helper.config.load import load_env
 
 faulthandler.enable()
 
@@ -29,7 +29,7 @@ else:
     os.environ['DYNAMIC_CONFIG'] = 'false'
 
 dynamic.handler()
-load_dotenv('config.env')
+load_env('config.env')
 
 Interval = []
 

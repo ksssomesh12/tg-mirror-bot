@@ -6,40 +6,10 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from google.auth.transport.requests import Request
 from magic import Magic
-from . import reformatter
+from . import load
 from .dynamic import fileIdDict
 
 LOGGER = logging.getLogger(__name__)
-
-
-def file_dat(fileName: str):
-    dat = open(fileName, 'r').read().replace(' = ', '\n').split('\n')
-    env_name = []
-    env_value = []
-    i = 0
-    while i <= ((dat.__len__() / 2) - 1):
-        env_name.append(dat[i * 2])
-        env_value.append(dat[(i * 2) + 1])
-        i += 1
-    return env_name, env_value
-
-
-def update_dat(fileName: str, file_name_ch: str, new_env_value: str):
-    reformatter.handler(fileName)
-    env_name, env_value = file_dat(fileName)
-    i = 0
-    while i <= (env_name.__len__() - 1):
-        if env_name[i] == file_name_ch.upper().replace('.', '_'):
-            env_value[i] = new_env_value
-        else:
-            pass
-        i += 1
-    dat_new = ''
-    i = 0
-    while i <= (env_name.__len__() - 1):
-        dat_new = dat_new + env_name[i] + ' = ' + env_value[i] + '\n'
-        i += 1
-    open(fileName, 'w').write(dat_new)
 
 
 def authorize(token_file: str):
@@ -81,7 +51,7 @@ def fileReUpload(service, fileName, fileId, fileMetadata, mediaBody):
 
 def update_fileid(fileName, fileSync):
     fileidName = 'fileid.env'
-    update_dat(fileidName, fileName, fileSync['id'])
+    load.update_dat(fileidName, fileName, fileSync['id'])
     fileidId = fileIdDict[fileidName.upper().replace('.', '_')]
     service, fileMetadata, mediaBody = buildSync(fileidName)
     fileidSync = filePatch(service, fileidId, fileMetadata, mediaBody)
