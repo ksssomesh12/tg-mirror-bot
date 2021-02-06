@@ -5,6 +5,7 @@ from . import reformatter
 from . import sync
 from .dynamic import fileIdDict
 from bot.helper.telegram_helper.message_utils import sendMessage
+from bot.helper.telegram_helper.bot_commands import BotCommands
 
 LOGGER = logging.getLogger(__name__)
 
@@ -17,7 +18,10 @@ def cfg_bak(update, context):
 
 def handler(update, context):
     reformatter.handler('config.env')
-    cfg_bak(update, context)
+    # cfg_bak(update, context)
     file_name = 'config.env'
-    result_str = sync.handler(file_name, fileIdDict[file_name.upper().replace('.', '_')], usePatch=False)
-    sendMessage(result_str, context.bot, update)
+    file_id = fileIdDict[file_name.upper().replace('.', '_')]
+    sync.handler(file_name, file_id, usePatch=False, update=update, context=context)
+    req_restart_msg = f"Please /{BotCommands.RestartCommand} to load changes made to 'config.env'"
+    LOGGER.info(req_restart_msg)
+    sendMessage(req_restart_msg, context.bot, update)

@@ -56,9 +56,8 @@ Type /{BotCommands.HelpCommand} to get a list of available commands
 @run_async
 def restart(update, context):
     file_name = 'token.pickle'
-    sync_message = sendMessage("Syncing 'token.pickle' to Google Drive...", context.bot, update)
-    result_str = sync.handler(file_name, fileIdDict[file_name.upper().replace('.', '_')], usePatch=False)
-    sync_message.edit_text(result_str)
+    file_id = fileIdDict[file_name.upper().replace('.', '_')]
+    sync.handler(file_name, file_id, usePatch=False, update=update, context=context)
     restart_message = sendMessage("Restarting, Please Wait!", context.bot, update)
     LOGGER.info(f'Restarting the Bot...')
     # Save restart message object in order to reply to it after restarting

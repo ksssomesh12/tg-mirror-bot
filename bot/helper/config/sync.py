@@ -8,6 +8,7 @@ from google.auth.transport.requests import Request
 from magic import Magic
 from . import load
 from .dynamic import fileIdDict
+from bot.helper.telegram_helper.message_utils import sendMessage
 
 LOGGER = logging.getLogger(__name__)
 
@@ -21,7 +22,7 @@ def authorize(token_file: str):
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            LOGGER.info('Token Expired')
+            LOGGER.info("'token.pickle' Expired, Please Update Manually")
             exit(1)
         with open(token_file, 'wb') as token:
             pickle.dump(creds, token)
@@ -36,6 +37,10 @@ def buildSync(fileName):
     return service, fileMetadata, mediaBody
 
 
+def result_string(fileName, fileSync):
+    return f"Synced: [{fileName}] [{os.path.getsize(fileName)} bytes] [{fileSync['id']}]"
+
+
 def filePatch(service, fileId, fileMetadata, mediaBody):
     fileSync = service.files().update(fileId=fileId, body=fileMetadata, media_body=mediaBody).execute()
     return fileSync
@@ -45,25 +50,32 @@ def fileReUpload(service, fileName, fileId, fileMetadata, mediaBody):
     fileMetadata['parents'] = [os.environ['CONFIG_PARENT_ID']]
     fileSync = service.files().create(body=fileMetadata, media_body=mediaBody).execute()
     service.files().delete(fileId=fileId).execute()
-    update_fileid(fileName, fileSync)
-    return fileSync
+    upd_fileid_str = update_fileid_env(fileName, fileSync)
+    return fileSync, upd_fileid_str
 
 
-def update_fileid(fileName, fileSync):
+def update_fileid_env(fileName, fileSync):
     fileidName = 'fileid.env'
     load.update_dat(fileidName, fileName, fileSync['id'])
     fileidId = fileIdDict[fileidName.upper().replace('.', '_')]
     service, fileMetadata, mediaBody = buildSync(fileidName)
     fileidSync = filePatch(service, fileidId, fileMetadata, mediaBody)
-    LOGGER.info(f"Updated 'fileid.env' - {fileidSync['id']}")
+    return result_string(fileidName, fileidSync)
 
 
-def handler(fileName: str, fileId: str, usePatch: bool):
+def handler(fileName: str, fileId: str, usePatch: bool, update, context):
+    sync_msg = sendMessage(f"Syncing '{fileName}' to Google Drive...", context.bot, update)
     service, fileMetadata, mediaBody = buildSync(fileName)
     if usePatch:
-        fileSync = filePatch(service, fileId, fileMetadata, mediaBody)
+        fileSync, upd_fileid_res = filePatch(service, fileId, fileMetadata, mediaBody), ''
     else:
-        fileSync = fileReUpload(service, fileName, fileId, fileMetadata, mediaBody)
-    result_str = f"Synced: [{fileName}] [{os.path.getsize(fileName)} bytes] [{fileSync['id']}]"
+        fileSync, upd_fileid_res = fileReUpload(service, fileName, fileId, fileMetadata, mediaBody)
+    result_str = result_string(fileName, fileSync)
     LOGGER.info(result_str)
-    return result_str
+    sync_msg.edit_text(result_str)
+    if upd_fileid_res != '':
+        LOGGER.info(upd_fileid_res)
+        sendMessage(upd_fileid_res, context.bot, update)
+    else:
+        pass
+    return
