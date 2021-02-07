@@ -1,4 +1,5 @@
 import logging
+import warnings
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CommandHandler, ConversationHandler, CallbackContext, CallbackQueryHandler
 from . import reformatter
@@ -32,7 +33,6 @@ def stage_list(num: int, handler: list):
     list_out = []
     for i in range(0, num, 1):
         list_out.append(CallbackQueryHandler(handler[i], pattern='^' + str((i + 1)) + '$'))
-    LOGGER.info(list_out)
     return list_out
 
 
@@ -102,6 +102,7 @@ file_id = fileIdDict[file_name.upper().replace('.', '_')]
 env_name, env_value = load_dat(file_name)
 # global option
 # option: int
+warnings.filterwarnings("ignore")
 
 conv_handler = ConversationHandler(
         entry_points=[CommandHandler(BotCommands.ConfigCommand, choose, filters=CustomFilters.owner_filter)],
