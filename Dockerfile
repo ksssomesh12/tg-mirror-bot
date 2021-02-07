@@ -11,5 +11,5 @@ ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8' TZ='Asia/Kolkata
 COPY extract /usr/local/bin
 COPY netrc /root/.netrc
 COPY . .
-RUN chmod +x aria.sh start.sh /usr/local/bin/extract
+RUN chmod +x aria.sh start.sh /usr/local/bin/extract && chmod 600 /root/.netrc
 CMD ["./start.sh"]
