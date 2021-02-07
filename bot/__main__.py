@@ -14,7 +14,7 @@ from .helper.telegram_helper.bot_commands import BotCommands
 from .helper.telegram_helper.message_utils import *
 from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time
 from .helper.telegram_helper.filters import CustomFilters
-from .helper.config import editor
+from .helper.config import handler
 from .helper.config import sync
 from .helper.config.dynamic import fileIdDict
 from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, delete
@@ -78,11 +78,6 @@ def ping(update, context):
 @run_async
 def log(update, context):
     sendLogFile(context.bot, update)
-
-
-@run_async
-def config(update, context):
-    editor.handler(update, context)
 
 
 @run_async
@@ -152,7 +147,7 @@ def main():
     stats_handler = CommandHandler(BotCommands.StatsCommand,
                                    stats, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
     log_handler = CommandHandler(BotCommands.LogCommand, log, filters=CustomFilters.owner_filter)
-    config_handler = CommandHandler(BotCommands.ConfigCommand, config, filters=CustomFilters.owner_filter)
+    config_handler = handler.conv_handler
     dispatcher.add_handler(start_handler)
     dispatcher.add_handler(ping_handler)
     dispatcher.add_handler(restart_handler)
