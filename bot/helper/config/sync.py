@@ -38,7 +38,7 @@ def buildSync(fileName):
 
 
 def result_string(fileName, fileSync):
-    return f"Synced: [{fileName}] [{os.path.getsize(fileName)} bytes] [{fileSync['id']}]"
+    return f"Synced: [{fileName}] [{os.path.getsize(fileName)} bytes]\n[{fileSync['id']}]"
 
 
 def filePatch(service, fileId, fileMetadata, mediaBody):
@@ -50,11 +50,10 @@ def fileReUpload(service, fileName, fileId, fileMetadata, mediaBody):
     fileMetadata['parents'] = [os.environ['CONFIG_PARENT_ID']]
     fileSync = service.files().create(body=fileMetadata, media_body=mediaBody).execute()
     service.files().delete(fileId=fileId).execute()
-    upd_fileid_str = update_fileid_env(fileName, fileSync)
-    return fileSync, upd_fileid_str
+    return fileSync, update_fileid(fileName, fileSync)
 
 
-def update_fileid_env(fileName, fileSync):
+def update_fileid(fileName, fileSync):
     fileidName = 'fileid.env'
     load.update_dat(fileidName, fileName, fileSync['id'])
     fileidId = fileIdDict[fileidName.upper().replace('.', '_')]
@@ -75,7 +74,7 @@ def handler(fileName: str, fileId: str, usePatch: bool, update, context):
     sync_msg.edit_text(result_str)
     if upd_fileid_res != '':
         LOGGER.info(upd_fileid_res)
-        sendMessage(upd_fileid_res, context.bot, update)
+        sync_msg.edit_text(result_str + '\n' + upd_fileid_res)
     else:
         pass
     return
