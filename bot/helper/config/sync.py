@@ -38,29 +38,17 @@ def buildSync(fileName):
     return service, fileMetadata, mediaBody
 
 
-def result_string(fileName, fileSync):
-    return f"Synced: [{fileName}] [{os.path.getsize(fileName)} bytes]\n[{fileSync['id']}]"
-
-
-def filePatch(service, fileId, fileMetadata, mediaBody):
+def filePatch(service, fileName, fileId, fileMetadata, mediaBody):
     fileSync = service.files().update(fileId=fileId, body=fileMetadata, media_body=mediaBody).execute()
-    return fileSync
+    return f"Synced: [{fileName}] [{os.path.getsize(fileName)} bytes]\n[{fileSync['id']}]"
 
 
 def fileReUpload(service, fileName, fileId, fileMetadata, mediaBody):
     fileMetadata['parents'] = [os.environ['CONFIG_PARENT_ID']]
     fileSync = service.files().create(body=fileMetadata, media_body=mediaBody).execute()
+    load.update_dat('fileid.env', fileName.upper().replace('.', '_'), fileSync['id'])
     service.files().delete(fileId=fileId).execute()
-    return fileSync, update_fileid(fileName, fileSync)
-
-
-def update_fileid(fileName, fileSync):
-    fileidName = 'fileid.env'
-    load.update_dat(fileidName, fileName.upper().replace('.', '_'), fileSync['id'])
-    fileidId = fileIdDict[fileidName.upper().replace('.', '_')]
-    service, fileMetadata, mediaBody = buildSync(fileidName)
-    fileidSync = filePatch(service, fileidId, fileMetadata, mediaBody)
-    return result_string(fileidName, fileidSync)
+    return f"Synced: [{fileName}] [{os.path.getsize(fileName)} bytes]\n[{fileId}] -> [{fileSync['id']}]"
 
 
 def file(fileName: str, fileId: str, useReformat: bool, usePatch: bool):
@@ -70,13 +58,9 @@ def file(fileName: str, fileId: str, useReformat: bool, usePatch: bool):
         pass
     service, fileMetadata, mediaBody = buildSync(fileName)
     if usePatch:
-        fileSync, upd_fileid_res = filePatch(service, fileId, fileMetadata, mediaBody), ''
+        return filePatch(service, fileName, fileId, fileMetadata, mediaBody)
     else:
-        fileSync, upd_fileid_res = fileReUpload(service, fileName, fileId, fileMetadata, mediaBody)
-    result_str = result_string(fileName, fileSync)
-    if upd_fileid_res != '':
-        result_str = result_str + '\n' + upd_fileid_res
-    return result_str
+        return fileReUpload(service, fileName, fileId, fileMetadata, mediaBody)
 
 
 def handler(fileList: list, update, context):
@@ -88,7 +72,8 @@ def handler(fileList: list, update, context):
         else:
             ifReformat = ifPatch = False
         fileId = fileIdDict[fileName.upper().replace('.', '_')]
-        res_i = file(fileName, fileId, usePatch=ifPatch, useReformat=ifReformat )
-        result = result + res_i + '\n'
-    sync_msg.edit_text(result)
-    LOGGER.info(result)
+        result_file = file(fileName, fileId, usePatch=ifPatch, useReformat=ifReformat)
+        LOGGER.info(result_file)
+        result = result + result_file + '\n\n'
+        sync_msg.edit_text(result)
+    sync_msg.edit_text(result + 'Sync Completed!')

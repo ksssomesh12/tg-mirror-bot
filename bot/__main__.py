@@ -55,7 +55,7 @@ Type /{BotCommands.HelpCommand} to get a list of available commands
 
 @run_async
 def restart(update, context):
-    sync.handler(fileList, update, context)
+    sync.handler(fileList + ['fileid.env'], update, context)
     restart_message = sendMessage("Restarting, Please Wait!", context.bot, update)
     LOGGER.info(f'Restarting the Bot...')
     fs_utils.clean_all()
