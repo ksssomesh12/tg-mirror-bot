@@ -55,7 +55,7 @@ def fileReUpload(service, fileName, fileId, fileMetadata, mediaBody):
 
 def update_fileid(fileName, fileSync):
     fileidName = 'fileid.env'
-    load.update_dat(fileidName, fileName, fileSync['id'])
+    load.update_dat(fileidName, fileName.upper().replace('.', '_'), fileSync['id'])
     fileidId = fileIdDict[fileidName.upper().replace('.', '_')]
     service, fileMetadata, mediaBody = buildSync(fileidName)
     fileidSync = filePatch(service, fileidId, fileMetadata, mediaBody)
