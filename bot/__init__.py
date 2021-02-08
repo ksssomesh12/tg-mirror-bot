@@ -8,7 +8,6 @@ import telegram.ext as tg
 import socket
 import faulthandler
 from bot.helper.config import dynamic
-from bot.helper.config.load import load_env
 
 faulthandler.enable()
 
@@ -29,7 +28,6 @@ else:
     os.environ['DYNAMIC_CONFIG'] = 'false'
 
 dynamic.handler()
-load_env('config.env')
 
 Interval = []
 

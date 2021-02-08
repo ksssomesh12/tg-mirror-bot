@@ -7,6 +7,7 @@ from googleapiclient.http import MediaFileUpload
 from google.auth.transport.requests import Request
 from magic import Magic
 from . import load
+from . import reformatter
 from .dynamic import fileIdDict
 from bot.helper.telegram_helper.message_utils import sendMessage
 
@@ -62,19 +63,32 @@ def update_fileid(fileName, fileSync):
     return result_string(fileidName, fileidSync)
 
 
-def handler(fileName: str, fileId: str, usePatch: bool, update, context):
-    sync_msg = sendMessage(f"Syncing '{fileName}' to Google Drive...", context.bot, update)
+def file(fileName: str, fileId: str, useReformat: bool, usePatch: bool):
+    if useReformat:
+        reformatter.handler(fileName)
+    else:
+        pass
     service, fileMetadata, mediaBody = buildSync(fileName)
     if usePatch:
         fileSync, upd_fileid_res = filePatch(service, fileId, fileMetadata, mediaBody), ''
     else:
         fileSync, upd_fileid_res = fileReUpload(service, fileName, fileId, fileMetadata, mediaBody)
     result_str = result_string(fileName, fileSync)
-    LOGGER.info(result_str)
-    sync_msg.edit_text(result_str)
     if upd_fileid_res != '':
-        LOGGER.info(upd_fileid_res)
-        sync_msg.edit_text(result_str + '\n' + upd_fileid_res)
-    else:
-        pass
-    return
+        result_str = result_str + '\n' + upd_fileid_res
+    return result_str
+
+
+def handler(fileList: list, update, context):
+    sync_msg = sendMessage(f"Syncing {fileList} to Google Drive...", context.bot, update)
+    result = ''
+    for fileName in fileList:
+        if fileName.endswith('.env'):
+            ifReformat = ifPatch = True
+        else:
+            ifReformat = ifPatch = False
+        fileId = fileIdDict[fileName.upper().replace('.', '_')]
+        res_i = file(fileName, fileId, usePatch=ifPatch, useReformat=ifReformat )
+        result = result + res_i + '\n'
+    sync_msg.edit_text(result)
+    LOGGER.info(result)

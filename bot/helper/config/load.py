@@ -18,6 +18,7 @@ def update_dat(fileName: str, ch_key: str, ch_value: str):
     for i in range(len(env_name)):
         if env_name[i] == ch_key:
             env_value[i] = ch_value
+            pass
     dat_new = ''
     for i in range(len(env_name)):
         dat_new = dat_new + env_name[i] + ' = ' + env_value[i] + '\n'

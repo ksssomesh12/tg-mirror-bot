@@ -16,7 +16,7 @@ from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_tim
 from .helper.telegram_helper.filters import CustomFilters
 from .helper.config import handler
 from .helper.config import sync
-from .helper.config.dynamic import fileIdDict
+from .helper.config.dynamic import fileList
 from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, delete
 
 
@@ -55,13 +55,11 @@ Type /{BotCommands.HelpCommand} to get a list of available commands
 
 @run_async
 def restart(update, context):
-    file_name = 'token.pickle'
-    file_id = fileIdDict[file_name.upper().replace('.', '_')]
-    sync.handler(file_name, file_id, usePatch=False, update=update, context=context)
+    sync.handler(fileList, update, context)
     restart_message = sendMessage("Restarting, Please Wait!", context.bot, update)
     LOGGER.info(f'Restarting the Bot...')
-    # Save restart message object in order to reply to it after restarting
     fs_utils.clean_all()
+    # Save restart message object in order to reply to it after restarting
     with open('restart.pickle', 'wb') as status:
         pickle.dump(restart_message, status)
     execl(executable, executable, "-m", "bot")

@@ -155,7 +155,7 @@ nano dynamic_config.env
 - **CONFIG_ENV** : Google Drive FileID for 'config.env' file.
 - **CREDENTIALS_JSON** : Google Drive FileID for 'credentials.json' file.
 - **TOKEN_PICKLE** : Google Drive FileID for 'token.pickle' file.
-- **DL_WAIT_TIME** : Time to wait for aria2 to download the config files. By default it's set to '10' seconds, which is more than enough for deploying the bot to Heroku.
+- **DL_WAIT_TIME** : Time to wait for aria2 to download the config files. By default it's set to '5' seconds, which is more than enough for deploying the bot to Heroku.
 
 **NOTE:** If 'DL_WAIT_TIME' lapses, and the config files are not downloaded completely, the bot exits with exit code (1).
 
