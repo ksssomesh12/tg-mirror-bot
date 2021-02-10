@@ -1,5 +1,9 @@
+import logging
 import os
+import shutil
 from . import reformatter
+
+LOGGER = logging.getLogger(__name__)
 
 
 def load_dat(fileName: str):
@@ -38,3 +42,15 @@ def load_env(fileName: str):
     for env in env_dict:
         if env_dict[env] != '':
             os.environ[env] = env_dict[env]
+
+
+def file_bak(fileName: str):
+    cwd = os.getcwd()
+    fileBakName = fileName + '.bak'
+    shutil.copy(os.path.join(cwd, fileName), os.path.join(cwd, fileBakName))
+    if open(fileName, 'r').read() == open(fileBakName, 'r').read():
+        LOGGER.info(f"Copied: '{fileName}' -> '{fileBakName}'")
+        return fileBakName
+    else:
+        LOGGER.info(f"Error Copying '{fileName}'")
+        exit(1)

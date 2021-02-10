@@ -6,6 +6,8 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from google.auth.transport.requests import Request
 from magic import Magic
+from telegram import Update
+from telegram.ext import CallbackContext
 from . import load
 from . import reformatter
 from .dynamic import fileIdDict
@@ -23,7 +25,7 @@ def authorize(token_file: str):
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            LOGGER.info("'token.pickle' Expired, Please Update Manually")
+            LOGGER.info(f"'{token_file}' Expired, Please Update Manually")
             exit(1)
         with open(token_file, 'wb') as token:
             pickle.dump(creds, token)
@@ -63,7 +65,7 @@ def file(fileName: str, fileId: str, useReformat: bool, usePatch: bool):
         return fileReUpload(service, fileName, fileId, fileMetadata, mediaBody)
 
 
-def handler(fileList: list, update, context):
+def handler(fileList: list, update: Update, context: CallbackContext):
     sync_msg = sendMessage(f"Syncing {fileList} to Google Drive...", context.bot, update)
     result = ''
     for fileName in fileList:
