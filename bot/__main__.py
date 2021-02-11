@@ -17,7 +17,7 @@ from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_tim
 from .helper.telegram_helper.filters import CustomFilters
 from .helper.config import editor
 from .helper.config import sync
-from .helper.config.dynamic import configListAll, DYNAMIC_CONFIG
+from .helper.config.dynamic import configList, DYNAMIC_CONFIG
 from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, delete
 
 
@@ -57,7 +57,7 @@ Type /{BotCommands.HelpCommand} to get a list of available commands
 @run_async
 def restart(update: Update, context: CallbackContext):
     if DYNAMIC_CONFIG:
-        sync.handler(configListAll, update, context)
+        sync.handler(configList + ['fileid.env'], update, context)
     restart_message = sendMessage("Restarting, Please Wait!", context.bot, update)
     LOGGER.info(f'Restarting the Bot...')
     fs_utils.clean_all()

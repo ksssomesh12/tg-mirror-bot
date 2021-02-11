@@ -2,18 +2,17 @@ import aria2p
 import os
 import logging
 import time
-from .load import load_env, file_bak
+from .load import load_env
 from . import reformatter
 
 LOGGER = logging.getLogger(__name__)
 aria2 = aria2p.API(aria2p.Client(host="http://localhost", port=6800, secret=""))
-if os.environ['DYNAMIC_CONFIG'] == 'true':
-    DYNAMIC_CONFIG = True
+if os.path.exists('dynamic.env'):
+    os.environ['DYNAMIC_CONFIG'] = DYNAMIC_CONFIG = 'true'
 else:
-    DYNAMIC_CONFIG = False
+    os.environ['DYNAMIC_CONFIG'] = DYNAMIC_CONFIG = 'false'
 fileIdDict = {}
-configList = ['config.env', 'credentials.json', 'token.pickle']
-configListAll = configList + ['config.env.bak', 'fileid.env']
+configList = ['config.env', 'config.env.bak', 'credentials.json', 'token.pickle']
 
 
 def rm_dl(fileName: str):
@@ -45,8 +44,6 @@ def handler():
         load_env('fileid.env')
         for file in configList:
             rm_dl(file)
-        if os.path.exists('config.env.bak') is not True:
-            file_bak('config.env')
     else:
         LOGGER.info('Using Static Config, Instead of Dynamic Config')
         pass
