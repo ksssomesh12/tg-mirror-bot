@@ -5,10 +5,9 @@ import time
 
 import aria2p
 import telegram.ext as tg
-from dotenv import load_dotenv
 import socket
 import faulthandler
-from bot.helper import dynamic_config
+from bot.helper.config import dynamic
 
 faulthandler.enable()
 
@@ -23,13 +22,7 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s - %(message)s
                     handlers=[logging.FileHandler('log.txt'), logging.StreamHandler()],
                     level=logging.INFO)
 
-if os.path.exists('dynamic_config.env'):
-    os.environ['DYNAMIC_CONFIG'] = 'true'
-else:
-    os.environ['DYNAMIC_CONFIG'] = 'false'
-
-dynamic_config.helper()
-load_dotenv('config.env')
+dynamic.handler()
 
 Interval = []
 

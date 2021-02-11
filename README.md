@@ -172,7 +172,7 @@ nano dynamic_config.env
 - **CONFIG_ENV** : Google Drive FileID for 'config.env' file.
 - **CREDENTIALS_JSON** : Google Drive FileID for 'credentials.json' file.
 - **TOKEN_PICKLE** : Google Drive FileID for 'token.pickle' file.
-- **DL_WAIT_TIME** : Time to wait for aria2 to download the config files. By default it's set to '10' seconds, which is more than enough for deploying the bot to Heroku.
+- **DL_WAIT_TIME** : Time to wait for aria2 to download the config files. By default it's set to '5' seconds, which is more than enough for deploying the bot to Heroku.
 
 **NOTE:** If 'DL_WAIT_TIME' lapses, and the config files are not downloaded completely, the bot exits with exit code (1).
 
@@ -254,5 +254,6 @@ heroku logs --tail --app your-mirror-bot
 - **watch** - Mirror through 'youtube-dl' to Google Drive
 - **tarwatch** - Mirror through 'youtube-dl' and upload in archive format (.tar) to Google Drive
 - **delete** - Delete files in Google Drive matching the given string
+- **config** - Edit 'config.env' file
 
 **NOTE:** The above listed command descriptions can be copied and pasted in 'edit bot commands' section, when editing the bot settings with [@BotFather](https://t.me/botfather).
