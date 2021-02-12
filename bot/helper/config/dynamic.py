@@ -8,9 +8,11 @@ from . import reformatter
 LOGGER = logging.getLogger(__name__)
 aria2 = aria2p.API(aria2p.Client(host="http://localhost", port=6800, secret=""))
 if os.path.exists('dynamic.env'):
-    os.environ['DYNAMIC_CONFIG'] = DYNAMIC_CONFIG = 'true'
+    os.environ['DYNAMIC_CONFIG'] = 'true'
+    DYNAMIC_CONFIG = True
 else:
-    os.environ['DYNAMIC_CONFIG'] = DYNAMIC_CONFIG = 'false'
+    os.environ['DYNAMIC_CONFIG'] = 'false'
+    DYNAMIC_CONFIG = False
 fileIdDict = {}
 configList = ['config.env', 'config.env.bak', 'credentials.json', 'token.pickle']
 
