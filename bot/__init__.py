@@ -29,7 +29,6 @@ dynamic.handler()
 
 Interval = []
 
-
 LOGGER = logging.getLogger(__name__)
 
 try:
@@ -98,7 +97,7 @@ if USE_TELEGRAPH:
     telegraph = Telegraph()
     telegraph.create_account(short_name=sname)
     TELEGRAPH_TOKEN = telegraph.get_access_token()
-else:
+if not USE_TELEGRAPH:
     TELEGRAPH_TOKEN = None
     LOGGER.info("Not Using Telegra.ph...")
     pass
