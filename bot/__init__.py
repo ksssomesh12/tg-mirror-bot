@@ -76,16 +76,27 @@ except KeyError as e:
     LOGGER.error("One or more env variables missing! Exiting now")
     exit(1)
 
+try:
+    if os.environ['USE_TELEGRAPH'].upper() == 'TRUE':
+        USE_TELEGRAPH = True
+    else:
+        raise KeyError
+except KeyError:
+    USE_TELEGRAPH = False
+
 # Generate USER_SESSION_STRING
 LOGGER.info("Generating USER_SESSION_STRING...")
 with Client(':memory:', api_id=int(TELEGRAM_API), api_hash=TELEGRAM_HASH, bot_token=BOT_TOKEN) as app:
     USER_SESSION_STRING = app.export_session_string()
 
 # Generate TELEGRAPH_TOKEN
-LOGGER.info("Generating TELEGRAPH_TOKEN...")
-telegraph = Telegraph()
-telegraph.create_account(short_name="tg-mirror-bot")
-telegraph_token = telegraph.get_access_token()
+if USE_TELEGRAPH:
+    LOGGER.info("Generating TELEGRAPH_TOKEN...")
+    telegraph = Telegraph()
+    telegraph.create_account(short_name="tg-mirror-bot")
+    TELEGRAPH_TOKEN = telegraph.get_access_token()
+else:
+    pass
 
 try:
     INDEX_URL = os.environ['INDEX_URL']
