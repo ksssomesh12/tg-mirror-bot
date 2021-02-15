@@ -596,4 +596,4 @@ class GoogleDriveHelper:
                         url = requests.utils.requote_uri(f'{INDEX_URL}/{file.get("name")}')
                         msg += f' | <a href="{url}"> Index URL</a>'
                 msg += '\n'
-            return msg
+            return msg, ''

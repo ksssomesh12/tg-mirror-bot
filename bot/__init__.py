@@ -91,11 +91,14 @@ with Client(':memory:', api_id=int(TELEGRAM_API), api_hash=TELEGRAM_HASH, bot_to
 
 # Generate TELEGRAPH_TOKEN
 if USE_TELEGRAPH:
+    LOGGER.info("Using Telegra.ph...")
     LOGGER.info("Generating TELEGRAPH_TOKEN...")
     telegraph = Telegraph()
     telegraph.create_account(short_name="tg-mirror-bot")
     TELEGRAPH_TOKEN = telegraph.get_access_token()
 else:
+    TELEGRAPH_TOKEN = None
+    LOGGER.info("Not Using Telegra.ph...")
     pass
 
 try:
