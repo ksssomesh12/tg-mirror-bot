@@ -1,12 +1,13 @@
+import aria2p
+import faulthandler
 import logging
 import os
+import random
+import socket
+import string
 import threading
 import time
-
-import aria2p
 import telegram.ext as tg
-import socket
-import faulthandler
 from pyrogram import Client
 from telegraph import Telegraph
 from bot.helper.config import dynamic
@@ -91,10 +92,11 @@ with Client(':memory:', api_id=int(TELEGRAM_API), api_hash=TELEGRAM_HASH, bot_to
 
 # Generate TELEGRAPH_TOKEN
 if USE_TELEGRAPH:
+    sname = ''.join(random.SystemRandom().choices(string.ascii_letters, k=8))
     LOGGER.info("Using Telegra.ph...")
     LOGGER.info("Generating TELEGRAPH_TOKEN...")
     telegraph = Telegraph()
-    telegraph.create_account(short_name="tg-mirror-bot")
+    telegraph.create_account(short_name=sname)
     TELEGRAPH_TOKEN = telegraph.get_access_token()
 else:
     TELEGRAPH_TOKEN = None
