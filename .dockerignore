@@ -4,3 +4,4 @@
 deploy_heroku
 venv
 .gitignore
+setup.py

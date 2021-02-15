@@ -1,4 +1,5 @@
 config.env
+config.env.bak
 dynamic.env
 fileid.env
 credentials.json
