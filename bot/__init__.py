@@ -1,12 +1,15 @@
+import aria2p
+import faulthandler
 import logging
 import os
+import random
+import socket
+import string
 import threading
 import time
-
-import aria2p
 import telegram.ext as tg
-import socket
-import faulthandler
+from pyrogram import Client
+from telegraph import Telegraph
 from bot.helper.config import dynamic
 
 faulthandler.enable()
@@ -26,7 +29,6 @@ dynamic.handler()
 
 Interval = []
 
-
 LOGGER = logging.getLogger(__name__)
 
 try:
@@ -40,6 +42,8 @@ aria2 = aria2p.API(aria2p.Client(host="http://localhost", port=6800, secret=""))
 
 DOWNLOAD_DIR = None
 BOT_TOKEN = None
+TELEGRAM_API = None
+TELEGRAM_HASH = None
 
 download_dict_lock = threading.Lock()
 status_reply_dict_lock = threading.Lock()
@@ -60,19 +64,43 @@ if os.path.exists('authorized_chats.txt'):
 try:
     BOT_TOKEN = os.environ['BOT_TOKEN']
     parent_id = os.environ['GDRIVE_FOLDER_ID']
-    telegraph_token = os.environ['TELEGRAPH_TOKEN']
     DOWNLOAD_DIR = os.environ['DOWNLOAD_DIR']
     if DOWNLOAD_DIR[-1] != '/' or DOWNLOAD_DIR[-1] != '\\':
         DOWNLOAD_DIR = DOWNLOAD_DIR + '/'
     DOWNLOAD_STATUS_UPDATE_INTERVAL = int(os.environ['DOWNLOAD_STATUS_UPDATE_INTERVAL'])
     OWNER_ID = int(os.environ['OWNER_ID'])
     AUTO_DELETE_MESSAGE_DURATION = int(os.environ['AUTO_DELETE_MESSAGE_DURATION'])
-    USER_SESSION_STRING = os.environ['USER_SESSION_STRING']
     TELEGRAM_API = os.environ['TELEGRAM_API']
     TELEGRAM_HASH = os.environ['TELEGRAM_HASH']
 except KeyError as e:
     LOGGER.error("One or more env variables missing! Exiting now")
     exit(1)
+
+try:
+    if os.environ['USE_TELEGRAPH'].upper() == 'TRUE':
+        USE_TELEGRAPH = True
+    else:
+        raise KeyError
+except KeyError:
+    USE_TELEGRAPH = False
+
+# Generate USER_SESSION_STRING
+LOGGER.info("Generating USER_SESSION_STRING...")
+with Client(':memory:', api_id=int(TELEGRAM_API), api_hash=TELEGRAM_HASH, bot_token=BOT_TOKEN) as app:
+    USER_SESSION_STRING = app.export_session_string()
+
+# Generate TELEGRAPH_TOKEN
+if USE_TELEGRAPH:
+    sname = ''.join(random.SystemRandom().choices(string.ascii_letters, k=8))
+    LOGGER.info("Using Telegra.ph...")
+    LOGGER.info("Generating TELEGRAPH_TOKEN...")
+    telegraph = Telegraph()
+    telegraph.create_account(short_name=sname)
+    TELEGRAPH_TOKEN = telegraph.get_access_token()
+if not USE_TELEGRAPH:
+    TELEGRAPH_TOKEN = None
+    LOGGER.info("Not Using Telegra.ph...")
+    pass
 
 try:
     INDEX_URL = os.environ['INDEX_URL']
