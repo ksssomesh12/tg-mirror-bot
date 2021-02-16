@@ -91,6 +91,10 @@ def fileDelete(fileId: str):
 
 def handler():
     global fileList, CONFIG_PARENT_ID
+    if os.path.exists('dynamic.env'):
+        os.remove('dynamic.env')
+    if os.path.exists('fileid.env'):
+        os.remove('fileid.env')
     file_bak(fileList[0])
     reformatter(fileList[0])
     fileid_dat = f"CONFIG_PARENT_ID = {CONFIG_PARENT_ID}\n"
@@ -104,6 +108,8 @@ def handler():
     open(fileList[5], 'w').write(dynamic_dat)
     reformatter(fileList[5])
     fileUpload(fileList[5])
+    for file in fileList[0:5]:
+        os.remove(file)
 
 
 credentials = authorize()
@@ -117,8 +123,6 @@ if input('Do You Want to Use Dynamic Config? (y/n): ').lower() == 'y':
         fileDownload(old_ids[1])
         CONFIG_PARENT_ID = load_ids('fileid.env')[0]
         old_ids = old_ids + load_ids('fileid.env')[1:5]
-        os.remove('dynamic.env')
-        os.remove('fileid.env')
         handler()
         if input('Do You Want to Delete Old Config Files? (y/n): ').lower() == 'y':
             for fileid in old_ids:
