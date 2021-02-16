@@ -1,7 +1,8 @@
 .circleci
 .git
 .idea
-deploy_heroku
+deploy
+env_samples
 venv
 .gitignore
 setup.py
