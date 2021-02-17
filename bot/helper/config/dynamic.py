@@ -26,14 +26,14 @@ def rm_dl(fileName: str):
     fileIdDict[env_name] = f"{os.environ[env_name]}"
     gid = aria2.add_uris([f"https://docs.google.com/uc?export=download&id={fileIdDict[env_name]}"]).gid
     retry_status = 0
-    while aria2.get_download(gid).status != 'complete' and retry_status != 10 * os.environ['DL_WAIT_TIME']:
+    while aria2.get_download(gid).status != 'complete' and retry_status != 10 * int(os.environ['DL_WAIT_TIME']):
         time.sleep(0.1)
         retry_status += 1
     if os.path.exists(fileName):
         LOGGER.info(f"Downloaded '{fileName}'")
         pass
     else:
-        LOGGER.error(f'Config File Missing: {fileName} ...\n Exiting...')
+        LOGGER.error(f"Config File Missing: '{fileName}' ...\n Exiting...")
         exit(1)
 
 
