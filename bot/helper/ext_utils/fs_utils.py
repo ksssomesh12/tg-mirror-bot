@@ -29,16 +29,6 @@ def clean_all():
         pass
 
 
-def exit_clean_up(signal, frame):
-    try:
-        LOGGER.info("Please wait, while we clean up the downloads and stop running downloads")
-        clean_all()
-        sys.exit(0)
-    except KeyboardInterrupt:
-        LOGGER.warning("Force Exiting before the cleanup finishes!")
-        sys.exit(1)
-
-
 def get_path_size(path):
     if os.path.isfile(path):
         return os.path.getsize(path)

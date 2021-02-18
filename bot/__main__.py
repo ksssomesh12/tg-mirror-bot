@@ -16,6 +16,7 @@ from .helper.telegram_helper.message_utils import *
 from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time
 from .helper.telegram_helper.filters import CustomFilters
 from .helper.config import editor
+from .helper.config.subproc import killAll
 from .helper.config import sync
 from .helper.config.dynamic import configList, DYNAMIC_CONFIG
 from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, delete
@@ -56,14 +57,20 @@ Type /{BotCommands.HelpCommand} to get a list of available commands
 
 @run_async
 def restart(update: Update, context: CallbackContext):
-    if DYNAMIC_CONFIG:
-        sync.handler(configList + ['fileid.env'], update, context)
-    restart_message = sendMessage("Restarting, Please Wait!", context.bot, update)
+    restart_msg = sendMessage('Restarting, Please Wait...', context.bot, update)
     LOGGER.info(f'Restarting the Bot...')
     fs_utils.clean_all()
+    killAll()
+    if DYNAMIC_CONFIG:
+        time.sleep(3)
+        restart_msg.edit_text(f'Syncing to Google Drive...')
+        sync.handler(configList)
+        restart_msg.edit_text(f'Sync Completed!\n{configList}')
+    if not DYNAMIC_CONFIG:
+        time.sleep(5)
     # Save restart message object in order to reply to it after restarting
     with open('restart.pickle', 'wb') as status:
-        pickle.dump(restart_message, status)
+        pickle.dump(restart_msg, status)
     execl(executable, executable, "-m", "bot")
 
 
@@ -132,8 +139,8 @@ def main():
     # Check if the bot is restarting
     if path.exists('restart.pickle'):
         with open('restart.pickle', 'rb') as status:
-            restart_message = pickle.load(status)
-        restart_message.edit_text("Restarted Successfully!")
+            restart_msg = pickle.load(status)
+        restart_msg.edit_text('Sync Completed!\nRestarted Successfully!')
         LOGGER.info('Restarted Successfully!')
         remove('restart.pickle')
 
@@ -157,7 +164,9 @@ def main():
     dispatcher.add_handler(config_handler)
     updater.start_polling()
     LOGGER.info("Bot Started!")
-    signal.signal(signal.SIGINT, fs_utils.exit_clean_up)
+    updater.idle()
+    fs_utils.clean_all()
+    killAll()
 
 
 main()

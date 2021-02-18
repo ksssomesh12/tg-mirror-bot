@@ -108,7 +108,7 @@ def proceed(update: Update, context: CallbackContext) -> None:
     button_list = ['Save Changes', 'Discard Changes', 'Change Another Value']
     reply_str = ''
     for i in range(len(env_name_new)):
-        reply_str = reply_str + f'{env_name_new[i]} = {env_value_new[i]}' + '\n'
+        reply_str = reply_str + f'{env_name_new[i]} = "{env_value_new[i]}"' + '\n'
     query.edit_message_text(text=reply_str, reply_markup=InlineKeyboardMaker(button_list).build(1))
     return FIFTH
 
