@@ -18,12 +18,17 @@ def load_dat(fileName: str):
 
 
 def update_dat(fileName: str, ch_key: str, ch_value: str):
+    exists = False
     reformatter.handler(fileName)
     env_name, env_value = load_dat(fileName)
     for i in range(len(env_name)):
         if env_name[i] == ch_key:
             env_value[i] = ch_value
+            exists = True
             pass
+    if not exists:
+        env_name.append(ch_key)
+        env_value.append(ch_value)
     dat_new = ''
     for i in range(len(env_name)):
         dat_new = dat_new + env_name[i] + ' = "' + env_value[i] + '"\n'

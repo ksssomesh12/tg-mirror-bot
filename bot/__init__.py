@@ -11,6 +11,7 @@ import telegram.ext as tg
 from pyrogram import Client
 from telegraph import Telegraph
 from bot.helper.config import dynamic
+from bot.helper.config.load import update_dat
 
 faulthandler.enable()
 
@@ -84,10 +85,16 @@ try:
 except KeyError:
     USE_TELEGRAPH = False
 
-# Generate USER_SESSION_STRING
-LOGGER.info("Generating USER_SESSION_STRING...")
-with Client(':memory:', api_id=int(TELEGRAM_API), api_hash=TELEGRAM_HASH, bot_token=BOT_TOKEN) as app:
-    USER_SESSION_STRING = app.export_session_string()
+# Generate USER_SESSION_STRING, if not exists
+try:
+    if bool(os.environ['USER_SESSION_STRING']):
+        USER_SESSION_STRING = os.environ['USER_SESSION_STRING']
+        pass
+except KeyError:
+    LOGGER.info('Generating USER_SESSION_STRING...')
+    with Client(':memory:', api_id=int(TELEGRAM_API), api_hash=TELEGRAM_HASH, bot_token=BOT_TOKEN) as app:
+        USER_SESSION_STRING = app.export_session_string()
+        update_dat('config.env', 'USER_SESSION_STRING', USER_SESSION_STRING)
 
 # Generate TELEGRAPH_TOKEN
 if USE_TELEGRAPH:
