@@ -16,7 +16,7 @@ def reformatter(fileName: str):
         commented = re.findall("^#", line)
         newline = re.findall("^\n", line)
         if not commented and not newline:
-            formatted = formatted + line.replace('"', '')
+            formatted = formatted + line
     if open(fileName, 'r').read() == formatted:
         pass
     else:
@@ -37,10 +37,11 @@ def file_bak(fileName: str):
 
 
 def load_ids(fileName: str):
-    dat = open(fileName, 'r').read().replace(' ', '').replace('=', '\n').split('\n')
+    lines = open(fileName, 'r').readlines()
     env_value = []
-    for i in range((int(len(dat) / 2))):
-        env_value.append(dat[(i * 2) + 1])
+    for i in range(len(lines)):
+        line_dat = lines[i].replace('\n', '').replace('"', '').split(' = ')
+        env_value.append(line_dat[1])
     return env_value
 
 
@@ -97,18 +98,18 @@ def handler():
         os.remove('fileid.env')
     file_bak(fileList[0])
     reformatter(fileList[0])
-    fileid_dat = f"CONFIG_PARENT_ID = {CONFIG_PARENT_ID}\n"
+    fileid_dat = f'CONFIG_PARENT_ID = "' + CONFIG_PARENT_ID + '"\n'
     for fileName in fileList[0:4]:
         fileId = fileUpload(fileName)
-        fileid_dat = fileid_dat + fileName.upper().replace('.', '_') + ' = ' + fileId + '\n'
+        fileid_dat = fileid_dat + fileName.upper().replace('.', '_') + ' = "' + fileId + '"\n'
     open(fileList[4], 'w').write(fileid_dat)
     reformatter(fileList[4])
-    dynamic_dat = f"DL_WAIT_TIME = {input('Enter DL_WAIT_TIME (default is 5): ')}\n"
-    dynamic_dat = dynamic_dat + fileList[4].upper().replace('.', '_') + ' = ' + fileUpload(fileList[4]) + '\n'
+    dynamic_dat = f'DL_WAIT_TIME = "' + input('Enter DL_WAIT_TIME (default is 5): ') + '"\n'
+    dynamic_dat = dynamic_dat + fileList[4].upper().replace('.', '_') + ' = "' + fileUpload(fileList[4]) + '"\n'
     open(fileList[5], 'w').write(dynamic_dat)
     reformatter(fileList[5])
     fileUpload(fileList[5])
-    for file in fileList[0:5]:
+    for file in fileList[1:5]:
         os.remove(file)
 
 

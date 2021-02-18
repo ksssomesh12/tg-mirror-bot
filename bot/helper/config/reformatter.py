@@ -10,7 +10,7 @@ def handler(fileName: str):
         commented = re.findall("^#", line)
         newline = re.findall("^\n", line)
         if not commented and not newline:
-            formatted = formatted + line.replace('"', '')
+            formatted = formatted + line
     if open(fileName, 'r').read() == formatted:
         pass
     else:

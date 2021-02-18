@@ -21,8 +21,6 @@ def rm_dl(fileName: str):
     env_name = fileName.upper().replace('.', '_')
     if os.path.exists(f'{fileName}'):
         os.remove(f'{fileName}')
-    else:
-        pass
     fileIdDict[env_name] = f"{os.environ[env_name]}"
     gid = aria2.add_uris([f"https://docs.google.com/uc?export=download&id={fileIdDict[env_name]}"]).gid
     retry_status = 0
@@ -46,7 +44,7 @@ def handler():
         load_env('fileid.env')
         for file in configList:
             rm_dl(file)
-    else:
+    if not DYNAMIC_CONFIG:
         LOGGER.info('Using Static Config, Instead of Dynamic Config')
         pass
     reformatter.handler('config.env')
