@@ -12,8 +12,12 @@ def ariaDaemonStart():
     global aria2c
     trackerslistName = 'trackerslist.txt'
     dl(os.environ['TRACKERSLIST'], trackerslistName)
-    scriptName = 'aria.sh'
-    LOGGER.info(f"Generating '{scriptName}'...")
+    ariaScriptName = 'aria.sh'
+    ariaLogName = 'aria_log.txt'
+    for file in [ariaScriptName, ariaLogName]:
+        if os.path.exists(file):
+            os.remove(file)
+    LOGGER.info(f"Generating '{ariaScriptName}'...")
     dat = (
         f'#!/bin/bash' '\n' '\n'
         f'aria2c \\' '\n'
@@ -33,13 +37,14 @@ def ariaDaemonStart():
         f'   --split=10 \\' '\n'
         f'   --max-overall-upload-limit=1K \\' '\n'
         f'   --max-overall-download-limit={os.environ["MAX_DOWNLOAD_SPEED"]} \\' '\n'
-        f'   --max-concurrent-downloads={os.environ["MAX_CONCURRENT_DOWNLOADS"]}' '\n' '\n'
+        f'   --max-concurrent-downloads={os.environ["MAX_CONCURRENT_DOWNLOADS"]} \\' '\n'
+        f'   --log="{os.getcwd() + "/" + ariaLogName}"' '\n' '\n'
     )
-    open(scriptName, 'w').write(dat)
-    if open(scriptName, 'r').read() == dat:
-        LOGGER.info(subprocess.run(['chmod', '+x', scriptName, '-v'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
-        aria2c = subprocess.Popen(f'./{scriptName}')
-        LOGGER.info(f"{scriptName} started (pid {aria2c.pid})")
+    open(ariaScriptName, 'w').write(dat)
+    if open(ariaScriptName, 'r').read() == dat:
+        LOGGER.info(subprocess.run(['chmod', '+x', ariaScriptName, '-v'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
+        aria2c = subprocess.Popen(f'./{ariaScriptName}')
+        LOGGER.info(f"{ariaScriptName} started (pid {aria2c.pid})")
         return
     else:
         exit(1)

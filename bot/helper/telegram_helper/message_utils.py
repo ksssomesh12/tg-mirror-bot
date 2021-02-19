@@ -49,6 +49,10 @@ def sendLogFile(bot, update: Update):
         bot.send_document(document=f, filename=f.name,
                           reply_to_message_id=update.message.message_id,
                           chat_id=update.message.chat_id)
+    with open('aria_log.txt', 'rb') as f:
+        bot.send_document(document=f, filename=f.name,
+                          reply_to_message_id=update.message.message_id,
+                          chat_id=update.message.chat_id)
 
 
 def auto_delete_message(bot, cmd_message: Message, bot_message: Message):
