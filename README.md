@@ -38,6 +38,8 @@ A Telegram Bot written in Python language to mirror files on the internet to Goo
 - Dynamic Config Support, to facilitate easier and streamlined experience for editing config files.
 - Sync Config Files at every /restart command.
 - Edit values of environment variables in 'config.env' from within the bot using InlineKeyboardButtons.
+- 'aria2c' daemon starts as a subprocess from within the 'bot' python module, facilitating better handling of processes. This also results in both 'aria2c' daemon and the 'bot' python module restarting with every '/restart' command.
+- Support for using custom tracker list formatted as a text file, as required by 'aria2c' daemon.
 
 ## Supported Archive File Types
 ```
@@ -101,7 +103,12 @@ Fill up rest of the fields. The description of each field is given below.
 - **AUTO_DELETE_MESSAGE_DURATION** : Interval of time (in seconds), after which the bot deletes its message (and command message) which is expected to be viewed instantly (set to '-1' to never automatically delete messages).
 - **TELEGRAM_API** : This is to authenticate to your telegram account for downloading Telegram files. You can get this from [here](https://my.telegram.org).
 - **TELEGRAM_HASH** : This is to authenticate to your telegram account for downloading Telegram files. You can get this from [here](https://my.telegram.org).
+- **MAX_DOWNLOAD_SPEED** : Set the maximum download speed. By default, it is set to '0' (unlimited).
+- **MAX_CONCURRENT_DOWNLOADS** : Set the maximum concurrent downloads. By default, it is set to '3'.
+- **TRACKERSLIST** : Set the URL of the trackerslist text file. By default, it is set to 'https://trackerslist.com/all_aria2.txt'.
 - **USE_TELEGRAPH** : Set to "true" to use Telegra.ph for search results from '/list' bot command, or else set to "false".
+
+**NOTE:** The trackerslist text file must contain tracker URLs in a single line, separated by commas, as required by 'aria2c'.
 
 ### Optional Fields (leave empty if unsure)
 
@@ -121,10 +128,6 @@ Fill up rest of the fields. The description of each field is given below.
         > shortzon.com
         
         Additionally, some other shorteners are also supported unofficially.
-
-**NOTE:**
-- You can limit the maximum concurrent downloads by changing the value of 'MAX_CONCURRENT_DOWNLOADS' in 'aria.sh'. By default, it's set to '3'.
-- You can limit the maximum download speed by changing the value of 'MAX_DOWNLOAD_SPEED' in 'aria.sh'. By default, it's set to '0' (unlimited).
 
 ## Getting Google OAuth API Credential File
 
@@ -247,7 +250,7 @@ heroku logs --tail --app your-mirror-bot
 - **restart** - Restart the bot
 - **stats** - Shows the stats of the machine that the bot is hosted on
 - **help** - To get the help message
-- **log** - Sends the log file of the bot (can be used to analyse crash reports, if any)
+- **log** - Sends the log file of the bot and the log file of 'aria2c' daemon (can be used to analyse crash reports, if any)
 - **clone** - Clone folders in Google Drive (owned by someone else) to your Google Drive 
 - **watch** - Mirror through 'youtube-dl' to Google Drive
 - **tarwatch** - Mirror through 'youtube-dl' and upload in archive format (.tar) to Google Drive

@@ -118,7 +118,7 @@ def bot_help(update: Update, context: CallbackContext):
 
 /{BotCommands.HelpCommand}: To get the help message
 
-/{BotCommands.LogCommand} Sends the log file of the bot (can be used to analyse crash reports, if any)
+/{BotCommands.LogCommand} Sends the log file of the bot and the log file of 'aria2c' daemon (can be used to analyse crash reports, if any)
 
 /{BotCommands.CloneCommand} Clone folders in Google Drive (owned by someone else) to your Google Drive
 
