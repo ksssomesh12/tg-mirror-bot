@@ -7,25 +7,31 @@ LOGGER = logging.getLogger(__name__)
 
 
 def load_dat(fileName: str):
-    dat = open(fileName, 'r').read().replace(' ', '').replace('=', '\n').split('\n')
+    lines = open(fileName, 'r').readlines()
     env_name = []
     env_value = []
-    for i in range((int(len(dat) / 2))):
-        env_name.append(dat[i * 2])
-        env_value.append(dat[(i * 2) + 1])
+    for i in range(len(lines)):
+        line_dat = lines[i].replace('\n', '').replace('"', '').split(' = ')
+        env_name.append(line_dat[0])
+        env_value.append(line_dat[1])
     return env_name, env_value
 
 
 def update_dat(fileName: str, ch_key: str, ch_value: str):
+    exists = False
     reformatter.handler(fileName)
     env_name, env_value = load_dat(fileName)
     for i in range(len(env_name)):
         if env_name[i] == ch_key:
             env_value[i] = ch_value
+            exists = True
             pass
+    if not exists:
+        env_name.append(ch_key)
+        env_value.append(ch_value)
     dat_new = ''
     for i in range(len(env_name)):
-        dat_new = dat_new + env_name[i] + ' = ' + env_value[i] + '\n'
+        dat_new = dat_new + env_name[i] + ' = "' + env_value[i] + '"\n'
     open(fileName, 'w').write(dat_new)
 
 

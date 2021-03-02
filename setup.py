@@ -16,7 +16,7 @@ def reformatter(fileName: str):
         commented = re.findall("^#", line)
         newline = re.findall("^\n", line)
         if not commented and not newline:
-            formatted = formatted + line.replace('"', '')
+            formatted = formatted + line
     if open(fileName, 'r').read() == formatted:
         pass
     else:
@@ -37,10 +37,11 @@ def file_bak(fileName: str):
 
 
 def load_ids(fileName: str):
-    dat = open(fileName, 'r').read().replace(' ', '').replace('=', '\n').split('\n')
+    lines = open(fileName, 'r').readlines()
     env_value = []
-    for i in range((int(len(dat) / 2))):
-        env_value.append(dat[(i * 2) + 1])
+    for i in range(len(lines)):
+        line_dat = lines[i].replace('\n', '').replace('"', '').split(' = ')
+        env_value.append(line_dat[1])
     return env_value
 
 
@@ -82,6 +83,16 @@ def fileUpload(fileName: str):
     return fileOp['id']
 
 
+def filePatch(fileName: str, fileId: str):
+    global service
+    fileMimetype = Magic(mime=True).from_file(fileName)
+    fileMetadata = {'name': fileName, 'mimeType': fileMimetype}
+    mediaBody = MediaFileUpload(filename=fileName, mimetype=fileMimetype, resumable=False)
+    fileOp = service.files().update(fileId=fileId, body=fileMetadata, media_body=mediaBody).execute()
+    print(f"Synced: [{fileOp['id']}] [{fileName}] [{os.path.getsize(fileName)} bytes]")
+    return fileOp['id']
+
+
 def fileDelete(fileId: str):
     global service
     fileName = service.files().get(fileId=fileId).execute()['name']
@@ -90,33 +101,41 @@ def fileDelete(fileId: str):
 
 
 def handler():
-    global fileList, CONFIG_PARENT_ID
+    global fileList, old_ids, CONFIG_PARENT_ID, UPDATE_CONFIG
     if os.path.exists('dynamic.env'):
         os.remove('dynamic.env')
     if os.path.exists('fileid.env'):
         os.remove('fileid.env')
     file_bak(fileList[0])
     reformatter(fileList[0])
-    fileid_dat = f"CONFIG_PARENT_ID = {CONFIG_PARENT_ID}\n"
+    fileid_dat = f'CONFIG_PARENT_ID = "' + CONFIG_PARENT_ID + '"\n'
     for fileName in fileList[0:4]:
         fileId = fileUpload(fileName)
-        fileid_dat = fileid_dat + fileName.upper().replace('.', '_') + ' = ' + fileId + '\n'
+        fileid_dat = fileid_dat + fileName.upper().replace('.', '_') + ' = "' + fileId + '"\n'
     open(fileList[4], 'w').write(fileid_dat)
     reformatter(fileList[4])
-    dynamic_dat = f"DL_WAIT_TIME = {input('Enter DL_WAIT_TIME (default is 5): ')}\n"
-    dynamic_dat = dynamic_dat + fileList[4].upper().replace('.', '_') + ' = ' + fileUpload(fileList[4]) + '\n'
+    dynamic_dat = f'DL_WAIT_TIME = "' + input('Enter DL_WAIT_TIME (default is 5): ') + '"\n'
+    if UPDATE_CONFIG:
+        dynamic_dat = dynamic_dat + fileList[4].upper().replace('.', '_') + ' = "' + filePatch(fileList[4], old_ids[1]) + '"\n'
+    if not UPDATE_CONFIG:
+        dynamic_dat = dynamic_dat + fileList[4].upper().replace('.', '_') + ' = "' + fileUpload(fileList[4]) + '"\n'
     open(fileList[5], 'w').write(dynamic_dat)
     reformatter(fileList[5])
-    fileUpload(fileList[5])
-    for file in fileList[0:5]:
+    if UPDATE_CONFIG:
+        filePatch(fileList[5], old_ids[0])
+    if not UPDATE_CONFIG:
+        fileUpload(fileList[5])
+    for file in fileList[1:5]:
         os.remove(file)
 
 
 credentials = authorize()
 fileList = ['config.env', 'config.env.bak', 'credentials.json', 'token.pickle', 'fileid.env', 'dynamic.env']
+UPDATE_CONFIG = False
 service = build(serviceName='drive', version='v3', credentials=credentials, cache_discovery=False)
 if input('Do You Want to Use Dynamic Config? (y/n): ').lower() == 'y':
     if input('Do You Want to Update Existing Config? (y/n): ').lower() == 'y':
+        UPDATE_CONFIG = True
         old_ids = [input("Enter FileId of 'dynamic.env': ")]
         fileDownload(old_ids[0])
         old_ids.append(load_ids('dynamic.env')[1])
@@ -125,7 +144,7 @@ if input('Do You Want to Use Dynamic Config? (y/n): ').lower() == 'y':
         old_ids = old_ids + load_ids('fileid.env')[1:5]
         handler()
         if input('Do You Want to Delete Old Config Files? (y/n): ').lower() == 'y':
-            for fileid in old_ids:
+            for fileid in old_ids[2:6]:
                 fileDelete(fileid)
     else:
         CONFIG_PARENT_ID = input('Enter Google Drive Parent Folder ID: ')

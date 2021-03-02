@@ -6,8 +6,6 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from google.auth.transport.requests import Request
 from magic import Magic
-from telegram import Update
-from telegram.ext import CallbackContext
 from . import load
 from . import reformatter
 from .dynamic import fileIdDict
@@ -65,9 +63,7 @@ def file(fileName: str, fileId: str, useReformat: bool, usePatch: bool):
         return fileReUpload(service, fileName, fileId, fileMetadata, mediaBody)
 
 
-def handler(fileList: list, update: Update, context: CallbackContext):
-    sync_msg = sendMessage(f"Syncing {fileList} to Google Drive...", context.bot, update)
-    result = ''
+def handler(fileList: list):
     for fileName in fileList:
         if fileName.endswith('.env'):
             ifReformat = ifPatch = True
@@ -76,6 +72,3 @@ def handler(fileList: list, update: Update, context: CallbackContext):
         fileId = fileIdDict[fileName.upper().replace('.', '_')]
         result_file = file(fileName, fileId, usePatch=ifPatch, useReformat=ifReformat)
         LOGGER.info(result_file)
-        result = result + result_file + '\n\n'
-        sync_msg.edit_text(result)
-    sync_msg.edit_text(result + 'Sync Completed!')
