@@ -41,7 +41,7 @@ def handler():
             rm_dl(file)
     if not DYNAMIC_CONFIG:
         LOGGER.info('Using Static Config, Instead of Dynamic Config')
-        pass
+        os.environ['DL_WAIT_TIME'] = '5'
     reformatter.handler('config.env')
     load_env('config.env')
     ariaDaemonStart()
