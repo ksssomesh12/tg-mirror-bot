@@ -2,23 +2,23 @@ import requests
 from telegram.ext import CommandHandler, run_async
 from telegram import InlineKeyboardMarkup
 
-from bot import Interval, INDEX_URL, BUTTON_THREE_NAME, BUTTON_THREE_URL, BUTTON_FOUR_NAME, BUTTON_FOUR_URL, BUTTON_FIVE_NAME, BUTTON_FIVE_URL
-from bot import dispatcher, DOWNLOAD_DIR, DOWNLOAD_STATUS_UPDATE_INTERVAL, download_dict, download_dict_lock, SHORTENER, SHORTENER_API
-from bot.helper.ext_utils import fs_utils, bot_utils
-from bot.helper.ext_utils.bot_utils import setInterval
-from bot.helper.ext_utils.exceptions import DirectDownloadLinkException, NotSupportedExtractionArchive
-from bot.helper.mirror_utils.download_utils.aria2_download import AriaDownloadHelper
-from bot.helper.mirror_utils.download_utils.direct_link_generator import direct_link_generator
-from bot.helper.mirror_utils.download_utils.telegram_downloader import TelegramDownloadHelper
-from bot.helper.mirror_utils.status_utils import listeners
-from bot.helper.mirror_utils.status_utils.extract_status import ExtractStatus
-from bot.helper.mirror_utils.status_utils.tar_status import TarStatus
-from bot.helper.mirror_utils.status_utils.upload_status import UploadStatus
-from bot.helper.mirror_utils.upload_utils import gdriveTools
-from bot.helper.telegram_helper.bot_commands import BotCommands
-from bot.helper.telegram_helper.filters import CustomFilters
-from bot.helper.telegram_helper.message_utils import *
-from bot.helper.telegram_helper import button_build
+from tgmb import Interval, INDEX_URL, BUTTON_THREE_NAME, BUTTON_THREE_URL, BUTTON_FOUR_NAME, BUTTON_FOUR_URL, BUTTON_FIVE_NAME, BUTTON_FIVE_URL
+from tgmb import dispatcher, DOWNLOAD_DIR, DOWNLOAD_STATUS_UPDATE_INTERVAL, download_dict, download_dict_lock, SHORTENER, SHORTENER_API
+from tgmb.helper.ext_utils import fs_utils, bot_utils
+from tgmb.helper.ext_utils.bot_utils import setInterval
+from tgmb.helper.ext_utils.exceptions import DirectDownloadLinkException, NotSupportedExtractionArchive
+from tgmb.helper.mirror_utils.download_utils.aria2_download import AriaDownloadHelper
+from tgmb.helper.mirror_utils.download_utils.direct_link_generator import direct_link_generator
+from tgmb.helper.mirror_utils.download_utils.telegram_downloader import TelegramDownloadHelper
+from tgmb.helper.mirror_utils.status_utils import listeners
+from tgmb.helper.mirror_utils.status_utils.extract_status import ExtractStatus
+from tgmb.helper.mirror_utils.status_utils.tar_status import TarStatus
+from tgmb.helper.mirror_utils.status_utils.upload_status import UploadStatus
+from tgmb.helper.mirror_utils.upload_utils import gdriveTools
+from tgmb.helper.telegram_helper.bot_commands import BotCommands
+from tgmb.helper.telegram_helper.filters import CustomFilters
+from tgmb.helper.telegram_helper.message_utils import *
+from tgmb.helper.telegram_helper import button_build
 import pathlib
 import os
 import subprocess

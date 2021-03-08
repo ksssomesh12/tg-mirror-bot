@@ -1,9 +1,9 @@
-from bot import aria2, download_dict_lock, STOP_DUPLICATE_MIRROR
-from bot.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
-from bot.helper.ext_utils.bot_utils import *
+from tgmb import aria2, download_dict_lock, STOP_DUPLICATE_MIRROR
+from tgmb.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
+from tgmb.helper.ext_utils.bot_utils import *
 from .download_helper import DownloadHelper
-from bot.helper.mirror_utils.status_utils.aria_download_status import AriaDownloadStatus
-from bot.helper.telegram_helper.message_utils import *
+from tgmb.helper.mirror_utils.status_utils.aria_download_status import AriaDownloadStatus
+from tgmb.helper.telegram_helper.message_utils import *
 import threading
 from aria2p import API
 from time import sleep

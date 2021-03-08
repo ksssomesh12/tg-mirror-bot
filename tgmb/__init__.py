@@ -10,8 +10,8 @@ import time
 import telegram.ext as tg
 from pyrogram import Client
 from telegraph import Telegraph
-from bot.helper.config import dynamic
-from bot.helper.config.load import update_dat
+from tgmb.helper.config import dynamic
+from tgmb.helper.config.load import update_dat
 
 faulthandler.enable()
 

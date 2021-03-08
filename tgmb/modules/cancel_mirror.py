@@ -1,13 +1,13 @@
 from telegram.ext import CommandHandler, run_async
 
-from bot import download_dict, dispatcher, download_dict_lock, DOWNLOAD_DIR
-from bot.helper.ext_utils.fs_utils import clean_download
-from bot.helper.telegram_helper.bot_commands import BotCommands
-from bot.helper.telegram_helper.filters import CustomFilters
-from bot.helper.telegram_helper.message_utils import *
+from tgmb import download_dict, dispatcher, download_dict_lock, DOWNLOAD_DIR
+from tgmb.helper.ext_utils.fs_utils import clean_download
+from tgmb.helper.telegram_helper.bot_commands import BotCommands
+from tgmb.helper.telegram_helper.filters import CustomFilters
+from tgmb.helper.telegram_helper.message_utils import *
 
 from time import sleep
-from bot.helper.ext_utils.bot_utils import getDownloadByGid, MirrorStatus
+from tgmb.helper.ext_utils.bot_utils import getDownloadByGid, MirrorStatus
 
 
 @run_async

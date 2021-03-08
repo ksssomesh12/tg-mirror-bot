@@ -1,9 +1,9 @@
 from telegram.ext import CommandHandler, run_async
-from bot.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
-from bot import LOGGER, dispatcher
-from bot.helper.telegram_helper.message_utils import sendMessage, editMessage
-from bot.helper.telegram_helper.filters import CustomFilters
-from bot.helper.telegram_helper.bot_commands import BotCommands
+from tgmb.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
+from tgmb import LOGGER, dispatcher
+from tgmb.helper.telegram_helper.message_utils import sendMessage, editMessage
+from tgmb.helper.telegram_helper.filters import CustomFilters
+from tgmb.helper.telegram_helper.bot_commands import BotCommands
 
 
 @run_async

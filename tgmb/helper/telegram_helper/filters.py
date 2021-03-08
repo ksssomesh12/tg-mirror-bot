@@ -1,6 +1,6 @@
 from telegram.ext import BaseFilter
 from telegram import Message
-from bot import AUTHORIZED_CHATS, OWNER_ID, download_dict, download_dict_lock
+from tgmb import AUTHORIZED_CHATS, OWNER_ID, download_dict, download_dict_lock
 
 
 class CustomFilters:

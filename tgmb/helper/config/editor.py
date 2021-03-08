@@ -5,8 +5,8 @@ from telegram.ext import CommandHandler, ConversationHandler, CallbackContext, C
 from telegram.ext import Filters
 from . import reformatter
 from .load import load_dat, file_bak, update_dat
-from bot.helper.telegram_helper.bot_commands import BotCommands
-from bot.helper.telegram_helper.filters import CustomFilters
+from tgmb.helper.telegram_helper.bot_commands import BotCommands
+from tgmb.helper.telegram_helper.filters import CustomFilters
 
 
 class InlineKeyboardMaker:

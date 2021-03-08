@@ -1,11 +1,11 @@
 from telegram.ext import CommandHandler, run_async
 import threading
 from telegram import Update
-from bot import dispatcher, LOGGER
-from bot.helper.telegram_helper.message_utils import auto_delete_message, sendMessage
-from bot.helper.telegram_helper.filters import CustomFilters
-from bot.helper.telegram_helper.bot_commands import BotCommands
-from bot.helper.mirror_utils.upload_utils import gdriveTools
+from tgmb import dispatcher, LOGGER
+from tgmb.helper.telegram_helper.message_utils import auto_delete_message, sendMessage
+from tgmb.helper.telegram_helper.filters import CustomFilters
+from tgmb.helper.telegram_helper.bot_commands import BotCommands
+from tgmb.helper.mirror_utils.upload_utils import gdriveTools
 
 
 @run_async

@@ -1,7 +1,7 @@
-from bot import DOWNLOAD_DIR
-from bot.helper.ext_utils.bot_utils import MirrorStatus, get_readable_file_size, get_readable_time
+from tgmb import DOWNLOAD_DIR
+from tgmb.helper.ext_utils.bot_utils import MirrorStatus, get_readable_file_size, get_readable_time
 from .status import Status
-from bot.helper.ext_utils.fs_utils import get_path_size
+from tgmb.helper.ext_utils.fs_utils import get_path_size
 
 
 class YoutubeDLDownloadStatus(Status):

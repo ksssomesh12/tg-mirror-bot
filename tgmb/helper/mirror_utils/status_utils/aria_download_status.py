@@ -1,5 +1,5 @@
-from bot import aria2, DOWNLOAD_DIR, LOGGER
-from bot.helper.ext_utils.bot_utils import MirrorStatus
+from tgmb import aria2, DOWNLOAD_DIR, LOGGER
+from tgmb.helper.ext_utils.bot_utils import MirrorStatus
 from .status import Status
 
 

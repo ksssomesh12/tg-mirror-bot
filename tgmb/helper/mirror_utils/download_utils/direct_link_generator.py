@@ -17,7 +17,7 @@ from random import choice
 import requests
 from bs4 import BeautifulSoup
 
-from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
+from tgmb.helper.ext_utils.exceptions import DirectDownloadLinkException
 
 
 def direct_link_generator(link: str):

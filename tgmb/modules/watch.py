@@ -1,12 +1,12 @@
 from telegram.ext import CommandHandler, run_async
 from telegram import Bot, Update
-from bot import Interval, DOWNLOAD_DIR, DOWNLOAD_STATUS_UPDATE_INTERVAL, dispatcher, LOGGER
-from bot.helper.ext_utils.bot_utils import setInterval
-from bot.helper.telegram_helper.message_utils import update_all_messages, sendMessage, sendStatusMessage
+from tgmb import Interval, DOWNLOAD_DIR, DOWNLOAD_STATUS_UPDATE_INTERVAL, dispatcher, LOGGER
+from tgmb.helper.ext_utils.bot_utils import setInterval
+from tgmb.helper.telegram_helper.message_utils import update_all_messages, sendMessage, sendStatusMessage
 from .mirror import MirrorListener
-from bot.helper.mirror_utils.download_utils.youtube_dl_download_helper import YoutubeDLHelper
-from bot.helper.telegram_helper.bot_commands import BotCommands
-from bot.helper.telegram_helper.filters import CustomFilters
+from tgmb.helper.mirror_utils.download_utils.youtube_dl_download_helper import YoutubeDLHelper
+from tgmb.helper.telegram_helper.bot_commands import BotCommands
+from tgmb.helper.telegram_helper.filters import CustomFilters
 import threading
 
 

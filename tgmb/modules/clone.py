@@ -1,10 +1,10 @@
 from telegram.ext import CommandHandler
-from bot.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
-from bot.helper.telegram_helper.message_utils import *
-from bot.helper.telegram_helper.filters import CustomFilters
-from bot.helper.telegram_helper.bot_commands import BotCommands
-from bot.helper.ext_utils.bot_utils import new_thread
-from bot import dispatcher
+from tgmb.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
+from tgmb.helper.telegram_helper.message_utils import *
+from tgmb.helper.telegram_helper.filters import CustomFilters
+from tgmb.helper.telegram_helper.bot_commands import BotCommands
+from tgmb.helper.ext_utils.bot_utils import new_thread
+from tgmb import dispatcher
 
 
 @new_thread

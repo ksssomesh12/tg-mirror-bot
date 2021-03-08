@@ -9,7 +9,7 @@ from magic import Magic
 from . import load
 from . import reformatter
 from .dynamic import fileIdDict
-from bot.helper.telegram_helper.message_utils import sendMessage
+from tgmb.helper.telegram_helper.message_utils import sendMessage
 
 LOGGER = logging.getLogger(__name__)
 
