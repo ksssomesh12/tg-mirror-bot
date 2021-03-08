@@ -1,7 +1,1 @@
-.circleci
-.git
-.idea
-deploy
-env_samples
-venv
-.gitignore
+*

@@ -151,3 +151,17 @@ if input('Do You Want to Use Dynamic Config? (y/n): ').lower() == 'y':
         handler()
 print('Setup Completed')
 exit(0)
+
+# sample - dynamic.env
+# --- BEGINS --- #
+# FILEID_ENV = ""
+# DL_WAIT_TIME = "5"
+# --- ENDS --- #
+
+# sample - fileid.env
+# --- BEGINS --- #
+# CONFIG_PARENT_ID = ""
+# CONFIG_ENV = ""
+# CREDENTIALS_JSON = ""
+# TOKEN_PICKLE = ""
+# --- ENDS --- #
