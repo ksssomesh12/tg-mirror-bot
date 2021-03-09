@@ -1,3 +1,4 @@
+*.py
+*.yml
 *sample*
 requirements.txt
-setup.py

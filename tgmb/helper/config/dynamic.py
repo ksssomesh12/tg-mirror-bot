@@ -2,7 +2,7 @@ import os
 import logging
 from .load import load_env
 from . import reformatter
-from .subproc import ariaDaemonStart, dl
+from .subproc import ariaDaemonStart, dl, netrc
 
 LOGGER = logging.getLogger(__name__)
 
@@ -13,7 +13,7 @@ else:
     os.environ['DYNAMIC_CONFIG'] = 'false'
     DYNAMIC_CONFIG = False
 fileIdDict = {}
-configList = ['config.env', 'config.env.bak', 'credentials.json', 'token.pickle', 'fileid.env']
+configList = ['config.env', 'config.env.bak', 'credentials.json', 'token.pickle', 'netrc', 'fileid.env']
 
 
 def rm_dl(fileName: str):
@@ -37,11 +37,12 @@ def handler():
         rm_dl('fileid.env')
         reformatter.handler('fileid.env')
         load_env('fileid.env')
-        for file in configList[0:4]:
+        for file in configList[0:5]:
             rm_dl(file)
     if not DYNAMIC_CONFIG:
         LOGGER.info('Using Static Config, Instead of Dynamic Config')
         os.environ['DL_WAIT_TIME'] = '5'
     reformatter.handler('config.env')
     load_env('config.env')
+    netrc()
     ariaDaemonStart()

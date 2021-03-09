@@ -109,28 +109,28 @@ def handler():
     file_bak(fileList[0])
     reformatter(fileList[0])
     fileid_dat = f'CONFIG_PARENT_ID = "' + CONFIG_PARENT_ID + '"\n'
-    for fileName in fileList[0:4]:
+    for fileName in fileList[0:5]:
         fileId = fileUpload(fileName)
         fileid_dat = fileid_dat + fileName.upper().replace('.', '_') + ' = "' + fileId + '"\n'
-    open(fileList[4], 'w').write(fileid_dat)
-    reformatter(fileList[4])
+    open(fileList[5], 'w').write(fileid_dat)
+    reformatter(fileList[5])
     dynamic_dat = f'DL_WAIT_TIME = "' + input('Enter DL_WAIT_TIME (default is 5): ') + '"\n'
     if UPDATE_CONFIG:
-        dynamic_dat = dynamic_dat + fileList[4].upper().replace('.', '_') + ' = "' + filePatch(fileList[4], old_ids[1]) + '"\n'
+        dynamic_dat = dynamic_dat + fileList[5].upper().replace('.', '_') + ' = "' + filePatch(fileList[5], old_ids[1]) + '"\n'
     if not UPDATE_CONFIG:
-        dynamic_dat = dynamic_dat + fileList[4].upper().replace('.', '_') + ' = "' + fileUpload(fileList[4]) + '"\n'
-    open(fileList[5], 'w').write(dynamic_dat)
-    reformatter(fileList[5])
+        dynamic_dat = dynamic_dat + fileList[5].upper().replace('.', '_') + ' = "' + fileUpload(fileList[5]) + '"\n'
+    open(fileList[6], 'w').write(dynamic_dat)
+    reformatter(fileList[6])
     if UPDATE_CONFIG:
-        filePatch(fileList[5], old_ids[0])
+        filePatch(fileList[6], old_ids[0])
     if not UPDATE_CONFIG:
-        fileUpload(fileList[5])
-    for file in fileList[1:5]:
+        fileUpload(fileList[6])
+    for file in fileList[1:6]:
         os.remove(file)
 
 
 credentials = authorize()
-fileList = ['config.env', 'config.env.bak', 'credentials.json', 'token.pickle', 'fileid.env', 'dynamic.env']
+fileList = ['config.env', 'config.env.bak', 'credentials.json', 'token.pickle', 'netrc', 'fileid.env', 'dynamic.env']
 UPDATE_CONFIG = False
 service = build(serviceName='drive', version='v3', credentials=credentials, cache_discovery=False)
 if input('Do You Want to Use Dynamic Config? (y/n): ').lower() == 'y':
@@ -141,10 +141,10 @@ if input('Do You Want to Use Dynamic Config? (y/n): ').lower() == 'y':
         old_ids.append(load_ids('dynamic.env')[1])
         fileDownload(old_ids[1])
         CONFIG_PARENT_ID = load_ids('fileid.env')[0]
-        old_ids = old_ids + load_ids('fileid.env')[1:5]
+        old_ids = old_ids + load_ids('fileid.env')[1:6]
         handler()
         if input('Do You Want to Delete Old Config Files? (y/n): ').lower() == 'y':
-            for fileid in old_ids[2:6]:
+            for fileid in old_ids[2:7]:
                 fileDelete(fileid)
     else:
         CONFIG_PARENT_ID = input('Enter Google Drive Parent Folder ID: ')

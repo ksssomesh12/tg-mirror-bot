@@ -50,6 +50,17 @@ def ariaDaemonStart():
         exit(1)
 
 
+def netrc():
+    dot_netrc = '/root/.netrc'
+    if os.path.exists('netrc'):
+        if os.path.exists(dot_netrc):
+            os.remove(dot_netrc)
+        LOGGER.info(subprocess.run(['cp', 'netrc', dot_netrc, '-v'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
+        LOGGER.info(subprocess.run(['chmod', '600', dot_netrc, '-v'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
+    else:
+        LOGGER.info("File Not Found: 'netrc'...\n'netrc' Support Disabled!")
+
+
 def killAll():
     global aria2c
     aria2c.terminate()
