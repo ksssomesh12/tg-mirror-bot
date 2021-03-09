@@ -26,23 +26,13 @@ jobs:
       - checkout
       - run: |
           TAG=0.1.$CIRCLE_BUILD_NUM
-          if [ $CIRCLE_BRANCH == 'dev' ]
-          then
-            echo 'Building MEGA SDK...'
-            cd mega_sdk
-            docker build . -t mega-sdk:latest
-            docker run --name=mega-sdk_c --rm -dit mega-sdk:latest bash
-            docker cp mega-sdk_c:/sdk/bindings/python/dist/ ./
-            docker container stop mega-sdk_c
-            cd ..
-            echo "RUN pip3 install --no-cache-dir mega_sdk/dist/megasdk-*.whl" >> Dockerfile
-          fi
           docker build . -t $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH-$TAG
-          echo $DOCKERHUB_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
+          echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
           docker push $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH-$TAG
           sudo apt-get -qq update && sudo apt-get -qq install aria2
           mkdir env && cd env
-          echo 'https://docs.google.com/uc?export=download&id='$DC_FILEID | aria2c --input-file=-
+          echo 'https://docs.google.com/uc?export=download&id='$ENV_TAR_FILEID | aria2c --input-file=-
+          tar -xvf env.tar.xz && rm -rvf env.tar.xz
           echo "FROM $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH-$TAG
           WORKDIR /usr/src/app
           COPY . .
@@ -59,7 +49,7 @@ jobs:
     steps:
       - run: |
           TAG=0.1.$CIRCLE_PREVIOUS_BUILD_NUM
-          echo $DOCKERHUB_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
+          echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
           docker pull $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH-$TAG
           docker tag $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH-$TAG $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH-latest
           docker push $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH-latest

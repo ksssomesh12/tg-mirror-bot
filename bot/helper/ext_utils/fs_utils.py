@@ -23,10 +23,17 @@ def start_cleanup():
 
 def clean_all():
     aria2.remove_all(True)
+    shutil.rmtree(DOWNLOAD_DIR)
+
+
+def exit_clean_up(signal, frame):
     try:
-        shutil.rmtree(DOWNLOAD_DIR)
-    except FileNotFoundError:
-        pass
+        LOGGER.info("Please wait, while we clean up the downloads and stop running downloads")
+        clean_all()
+        sys.exit(0)
+    except KeyboardInterrupt:
+        LOGGER.warning("Force Exiting before the cleanup finishes!")
+        sys.exit(1)
 
 
 def get_path_size(path):

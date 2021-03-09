@@ -1,7 +1,7 @@
 .circleci
 .git
 .idea
-deploy
-env_samples
+deploy_heroku
+mega_sdk
 venv
 .gitignore

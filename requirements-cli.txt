@@ -5,4 +5,3 @@ progressbar2
 httplib2shim
 google_auth_oauthlib
 pyrogram
-python-magic
