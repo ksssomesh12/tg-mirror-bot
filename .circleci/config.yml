@@ -31,7 +31,7 @@ jobs:
           docker push $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH-$TAG
           sudo apt-get -qq update && sudo apt-get -qq install aria2
           mkdir env && cd env
-          echo 'https://docs.google.com/uc?export=download&id='$ENV_TAR_FILEID | aria2c --input-file=-
+          echo 'https://docs.google.com/uc?export=download&id='$DC_FILEID | aria2c --input-file=-
           tar -xvf env.tar.xz && rm -rvf env.tar.xz
           echo "FROM $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH-$TAG
           WORKDIR /usr/src/app
