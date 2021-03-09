@@ -71,7 +71,7 @@ def restart(update: Update, context: CallbackContext):
     # Save restart message object in order to reply to it after restarting
     with open('restart.pickle', 'wb') as status:
         pickle.dump(restart_msg, status)
-    execl(executable, executable, "-m", "bot")
+    execl(executable, executable, "-m", "tgmb")
 
 
 @run_async
