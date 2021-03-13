@@ -1,5 +1,6 @@
 # Description:
-A Telegram Bot written in Python language to mirror files on the internet to Google Drive.
+
+A Telegram Bot written in Python language to mirror files on the internet to Google Drive
 
 # Credits:
 

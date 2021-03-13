@@ -26,17 +26,6 @@ jobs:
       - checkout
       - run: |
           TAG=0.1.$CIRCLE_BUILD_NUM
-          if [ $CIRCLE_BRANCH == 'dev' ]
-          then
-            echo 'Building MEGA SDK...'
-            cd mega_sdk
-            docker build . -t mega-sdk:latest
-            docker run --name=mega-sdk_c --rm -dit mega-sdk:latest bash
-            docker cp mega-sdk_c:/sdk/bindings/python/dist/ ./
-            docker container stop mega-sdk_c
-            cd ..
-            echo "RUN pip3 install --no-cache-dir mega_sdk/dist/megasdk-*.whl" >> Dockerfile
-          fi
           docker build . -t $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH-$TAG
           echo $DOCKERHUB_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
           docker push $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH-$TAG
