@@ -2,12 +2,13 @@ import requests
 from telegram.ext import CommandHandler, run_async
 from telegram import InlineKeyboardMarkup
 
-from tgmb import Interval, INDEX_URL, BUTTON_THREE_NAME, BUTTON_THREE_URL, BUTTON_FOUR_NAME, BUTTON_FOUR_URL, BUTTON_FIVE_NAME, BUTTON_FIVE_URL
+from tgmb import Interval, INDEX_URL, BUTTON_THREE_NAME, BUTTON_THREE_URL, BUTTON_FOUR_NAME, BUTTON_FOUR_URL, BUTTON_FIVE_NAME, BUTTON_FIVE_URL, ENABLE_MEGA_SUPPORT
 from tgmb import dispatcher, DOWNLOAD_DIR, DOWNLOAD_STATUS_UPDATE_INTERVAL, download_dict, download_dict_lock, SHORTENER, SHORTENER_API
 from tgmb.helper.ext_utils import fs_utils, bot_utils
 from tgmb.helper.ext_utils.bot_utils import setInterval
 from tgmb.helper.ext_utils.exceptions import DirectDownloadLinkException, NotSupportedExtractionArchive
 from tgmb.helper.mirror_utils.download_utils.aria2_download import AriaDownloadHelper
+from tgmb.helper.mirror_utils.download_utils.mega_downloader import MegaDownloadHelper
 from tgmb.helper.mirror_utils.download_utils.direct_link_generator import direct_link_generator
 from tgmb.helper.mirror_utils.download_utils.telegram_downloader import TelegramDownloadHelper
 from tgmb.helper.mirror_utils.status_utils import listeners
@@ -235,8 +236,16 @@ def _mirror(bot, update, isTar=False, extract=False):
     except DirectDownloadLinkException as e:
         LOGGER.info(f'{link}: {e}')
     listener = MirrorListener(bot, update, isTar, tag, extract)
-    ariaDlManager.add_download(link, f'{DOWNLOAD_DIR}/{listener.uid}/', listener)
-    sendStatusMessage(update, bot)
+    if bot_utils.is_mega_link(link):
+        if ENABLE_MEGA_SUPPORT:
+            mega_dl = MegaDownloadHelper()
+            mega_dl.add_download(link, f'{DOWNLOAD_DIR}/{listener.uid}/', listener)
+            sendStatusMessage(update, bot)
+        else:
+            sendMessage("MEGA.NZ Support is Disabled", bot, update)
+    else:
+        ariaDlManager.add_download(link, f'{DOWNLOAD_DIR}/{listener.uid}/', listener)
+        sendStatusMessage(update, bot)
     if len(Interval) == 0:
         Interval.append(setInterval(DOWNLOAD_STATUS_UPDATE_INTERVAL, update_all_messages))
 

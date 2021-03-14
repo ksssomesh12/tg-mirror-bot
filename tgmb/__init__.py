@@ -45,6 +45,9 @@ DOWNLOAD_DIR = None
 BOT_TOKEN = None
 TELEGRAM_API = None
 TELEGRAM_HASH = None
+MEGA_API_KEY = None
+MEGA_EMAIL_ID = None
+MEGA_PASSWORD = None
 
 download_dict_lock = threading.Lock()
 status_reply_dict_lock = threading.Lock()
@@ -76,6 +79,31 @@ try:
 except KeyError as e:
     LOGGER.error("One or more env variables missing! Exiting now")
     exit(1)
+
+try:
+    if os.environ['ENABLE_MEGA_SUPPORT'].lower() == 'true':
+        ENABLE_MEGA_SUPPORT = True
+        try:
+            MEGA_API_KEY = os.environ['MEGA_API_KEY']
+            if len(MEGA_API_KEY) == 0:
+                raise KeyError
+        except KeyError:
+            logging.warning('MEGA API Key Not Provided!')
+            MEGA_API_KEY = None
+            try:
+                MEGA_EMAIL_ID = os.environ['MEGA_EMAIL_ID']
+                MEGA_PASSWORD = os.environ['MEGA_PASSWORD']
+                if len(MEGA_EMAIL_ID) == 0 or len(MEGA_PASSWORD) == 0:
+                    raise KeyError
+            except KeyError:
+                logging.warning("MEGA Credentials Not Provided!\nSetting 'ENABLE_MEGA_SUPPORT' to 'False'...")
+                MEGA_EMAIL_ID = None
+                MEGA_PASSWORD = None
+                ENABLE_MEGA_SUPPORT = False
+    else:
+        ENABLE_MEGA_SUPPORT = False
+except KeyError:
+    ENABLE_MEGA_SUPPORT = False
 
 try:
     if os.environ['USE_TELEGRAPH'].upper() == 'TRUE':
