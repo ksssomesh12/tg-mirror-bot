@@ -14,7 +14,7 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends softwar
     add-apt-repository ppa:rock-core/qt4 && apt-get -qq install -y --no-install-recommends git g++ gcc autoconf make \
     automake libtool m4 qt4-qmake libqt4-dev libcurl4-openssl-dev libcrypto++-dev libsqlite3-dev libc-ares-dev \
     libsodium-dev libnautilus-extension-dev libssl-dev libfreeimage-dev swig && apt-get -y autoremove
-RUN git clone https://github.com/meganz/sdk.git sdk && cd sdk \&& git checkout v$MEGA_SDK_VERSION && \
+RUN git clone https://github.com/meganz/sdk.git sdk && cd sdk && git checkout v$MEGA_SDK_VERSION && \
     ./autogen.sh && ./configure --disable-silent-rules --enable-python --with-sodium --disable-examples && \
     make -j$(nproc --all) && cd bindings/python && python3 setup.py bdist_wheel && cd dist && \
     pip3 install --no-cache-dir megasdk-$MEGA_SDK_VERSION-*.whl
