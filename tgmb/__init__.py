@@ -85,21 +85,16 @@ try:
         ENABLE_MEGA_SUPPORT = True
         try:
             MEGA_API_KEY = os.environ['MEGA_API_KEY']
-            if len(MEGA_API_KEY) == 0:
+            MEGA_EMAIL_ID = os.environ['MEGA_EMAIL_ID']
+            MEGA_PASSWORD = os.environ['MEGA_PASSWORD']
+            if len(MEGA_API_KEY) == 0 or len(MEGA_EMAIL_ID) == 0 or len(MEGA_PASSWORD) == 0:
                 raise KeyError
         except KeyError:
-            logging.warning('MEGA API Key Not Provided!')
+            logging.warning("MEGA Credentials Not Provided!\nSetting 'ENABLE_MEGA_SUPPORT' to 'False'...")
+            ENABLE_MEGA_SUPPORT = False
             MEGA_API_KEY = None
-            try:
-                MEGA_EMAIL_ID = os.environ['MEGA_EMAIL_ID']
-                MEGA_PASSWORD = os.environ['MEGA_PASSWORD']
-                if len(MEGA_EMAIL_ID) == 0 or len(MEGA_PASSWORD) == 0:
-                    raise KeyError
-            except KeyError:
-                logging.warning("MEGA Credentials Not Provided!\nSetting 'ENABLE_MEGA_SUPPORT' to 'False'...")
-                MEGA_EMAIL_ID = None
-                MEGA_PASSWORD = None
-                ENABLE_MEGA_SUPPORT = False
+            MEGA_EMAIL_ID = None
+            MEGA_PASSWORD = None
     else:
         ENABLE_MEGA_SUPPORT = False
 except KeyError:
@@ -202,6 +197,6 @@ except KeyError:
     SHORTENER = None
     SHORTENER_API = None
 
-updater = tg.Updater(token=BOT_TOKEN,use_context=True)
+updater = tg.Updater(token=BOT_TOKEN, use_context=True)
 bot = updater.bot
 dispatcher = updater.dispatcher
