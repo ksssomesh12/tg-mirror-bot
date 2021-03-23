@@ -87,10 +87,12 @@ try:
             MEGA_API_KEY = os.environ['MEGA_API_KEY']
             MEGA_EMAIL_ID = os.environ['MEGA_EMAIL_ID']
             MEGA_PASSWORD = os.environ['MEGA_PASSWORD']
-            if len(MEGA_API_KEY) == 0 or len(MEGA_EMAIL_ID) == 0 or len(MEGA_PASSWORD) == 0:
+            if len(MEGA_API_KEY) != 0 and len(MEGA_EMAIL_ID) != 0 and len(MEGA_PASSWORD) != 0:
+                LOGGER.info("MEGA Credentials Provided! Setting 'ENABLE_MEGA_SUPPORT' to 'True'...")
+            else:
                 raise KeyError
         except KeyError:
-            logging.warning("MEGA Credentials Not Provided!\nSetting 'ENABLE_MEGA_SUPPORT' to 'False'...")
+            LOGGER.info("MEGA Credentials Not Provided! Setting 'ENABLE_MEGA_SUPPORT' to 'False'...")
             ENABLE_MEGA_SUPPORT = False
             MEGA_API_KEY = None
             MEGA_EMAIL_ID = None
