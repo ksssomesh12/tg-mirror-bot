@@ -34,15 +34,16 @@ def stats(update: Update, context: CallbackContext):
     cpuUsage = psutil.cpu_percent(interval=0.5)
     memory = psutil.virtual_memory().percent
     disk = psutil.disk_usage('/').percent
-    stats = f'<b>Bot Uptime:</b> {currentTime}\n' \
-            f'<b>Total disk space:</b> {total}\n' \
-            f'<b>Used:</b> {used}  ' \
+    stats = f'<b>Bot UpTime ⌚:</b> {currentTime}\n\n' \
+            f'<b>CPU Usage 🖥️:</b> {cpuUsage}%\n' \
+            f'<b>RAM Usage 💾:</b> {memory}%\n' \
+            f'<b>Disk Usage 🗄️:</b> {disk}%\n\n' \
+            f'<b>Total Disk Space:</b> {total}\n' \
+            f'<b>Used:</b> {used}\n' \
             f'<b>Free:</b> {free}\n\n' \
-            f'📊Data Usage📊\n<b>Upload:</b> {sent}\n' \
-            f'<b>Down:</b> {recv}\n\n' \
-            f'<b>CPU:</b> {cpuUsage}% ' \
-            f'<b>RAM:</b> {memory}% ' \
-            f'<b>Disk:</b> {disk}%'
+            f'<b>Data Usage 📊:</b>\n' \
+            f'<b>Upload:</b> {sent}\n' \
+            f'<b>Download:</b> {recv}'
     sendMessage(stats, context.bot, update)
 
 
@@ -77,7 +78,7 @@ def restart(update: Update, context: CallbackContext):
 @run_async
 def ping(update: Update, context: CallbackContext):
     start_time = int(round(time.time() * 1000))
-    reply = sendMessage("Starting Ping", context.bot, update)
+    reply = sendMessage("Starting Ping...", context.bot, update)
     end_time = int(round(time.time() * 1000))
     editMessage(f'{end_time - start_time} ms', reply)
 
