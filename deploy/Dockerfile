@@ -1,3 +1,3 @@
-FROM ksssomesh12/tg-mirror-bot:master-latest
+FROM deadsec45/tor-botx:master-latest
 WORKDIR /usr/src/app
 COPY . .
