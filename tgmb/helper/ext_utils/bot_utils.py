@@ -4,6 +4,7 @@ import threading
 import time
 
 from tgmb import download_dict, download_dict_lock
+from tgmb.helper.telegram_helper.bot_commands import BotCommands
 
 LOGGER = logging.getLogger(__name__)
 
@@ -16,8 +17,8 @@ class MirrorStatus:
     STATUS_UPLOADING = "Uploading...📤"
     STATUS_DOWNLOADING = "Downloading...📥"
     STATUS_WAITING = "Queued...📝"
-    STATUS_FAILED = "Failed 🚫. Cleaning download"
-    STATUS_CANCELLED = "Cancelled ❎"
+    STATUS_FAILED = "Failed 🚫! Cleaning Download..."
+    STATUS_CANCELLED = "Cancelled ❎! Cleaning Download..."
     STATUS_ARCHIVING = "Archiving...🔐"
     STATUS_EXTRACTING = "Extracting...📂"
 
@@ -91,7 +92,7 @@ def get_readable_message():
     with download_dict_lock:
         msg = ""
         for download in list(download_dict.values()):
-            msg += f"<b>Filename :</b> <code>{download.name()}</code>"
+            msg += f"<b>📂Filename :</b> <code>{download.name()}</code>"
             msg += f"\n<b>Status :</b> <i>{download.status()}</i>"
             if download.status() != MirrorStatus.STATUS_ARCHIVING and download.status() != MirrorStatus.STATUS_EXTRACTING:
                 msg += f"\n<code>{get_progress_bar_string(download)} {download.progress()}</code>"
@@ -107,7 +108,7 @@ def get_readable_message():
                 except:
                     pass
             if download.status() == MirrorStatus.STATUS_DOWNLOADING:
-                msg += f"\n<b>GID</b>: <code>/{BotCommands.CancelMirrorCommand} {download.gid()}</code>"
+                msg += f"\n<b>To Stop 👉 :</b> <code>/{BotCommands.CancelMirrorCommand} {download.gid()}</code>"
             msg += "\n\n"
         return msg
 
