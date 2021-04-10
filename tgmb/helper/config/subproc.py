@@ -10,13 +10,13 @@ aria2c: subprocess.Popen
 
 def ariaDaemonStart():
     global aria2c
-    trackerslistName = 'trackerslist.txt'
-    dl(os.environ['TRACKERSLIST'], trackerslistName)
     ariaScriptName = 'aria.sh'
     ariaLogName = 'aria_log.txt'
-    for file in [ariaScriptName, ariaLogName]:
+    trackerslistName = 'trackerslist.txt'
+    for file in [ariaScriptName, ariaLogName, trackerslistName]:
         if os.path.exists(file):
             os.remove(file)
+    dl(os.environ['TRACKERSLIST'], trackerslistName)
     LOGGER.info(f"Generating '{ariaScriptName}'...")
     dat = (
         f'#!/bin/bash' '\n' '\n'

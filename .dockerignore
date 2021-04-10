@@ -1,1 +1,5 @@
-*
+.circleci
+.git
+.idea
+deploy
+.gitignore
