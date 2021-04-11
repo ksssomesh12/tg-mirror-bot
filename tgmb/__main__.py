@@ -34,15 +34,16 @@ def stats(update: Update, context: CallbackContext):
     cpuUsage = psutil.cpu_percent(interval=0.5)
     memory = psutil.virtual_memory().percent
     disk = psutil.disk_usage('/').percent
-    stats = f'<b>Bot Uptime:</b> {currentTime}\n' \
-            f'<b>Total disk space:</b> {total}\n' \
-            f'<b>Used:</b> {used}  ' \
+    stats = f'<b>Bot UpTime ⌚:</b> {currentTime}\n\n' \
+            f'<b>CPU Usage 🖥️:</b> {cpuUsage}%\n' \
+            f'<b>RAM Usage 💾:</b> {memory}%\n' \
+            f'<b>Disk Usage 🗄️:</b> {disk}%\n\n' \
+            f'<b>Total Disk Space:</b> {total}\n' \
+            f'<b>Used:</b> {used}\n' \
             f'<b>Free:</b> {free}\n\n' \
-            f'📊Data Usage📊\n<b>Upload:</b> {sent}\n' \
-            f'<b>Down:</b> {recv}\n\n' \
-            f'<b>CPU:</b> {cpuUsage}% ' \
-            f'<b>RAM:</b> {memory}% ' \
-            f'<b>Disk:</b> {disk}%'
+            f'<b>Data Usage 📊:</b>\n' \
+            f'<b>Upload:</b> {sent}\n' \
+            f'<b>Download:</b> {recv}'
     sendMessage(stats, context.bot, update)
 
 
@@ -68,16 +69,16 @@ def restart(update: Update, context: CallbackContext):
         restart_msg.edit_text(f'Sync Completed!\n{configList}')
     if not DYNAMIC_CONFIG:
         time.sleep(5)
-    # Save restart message object in order to reply to it after restarting
-    with open('restart.pickle', 'wb') as status:
-        pickle.dump(restart_msg, status)
+    # Save restart message info in order to reply to it after restarting
+    restart_msg_dat = f"{restart_msg.chat_id} {restart_msg.message_id}"
+    open('restart_msg.txt', 'wt').write(restart_msg_dat)
     execl(executable, executable, "-m", "tgmb")
 
 
 @run_async
 def ping(update: Update, context: CallbackContext):
     start_time = int(round(time.time() * 1000))
-    reply = sendMessage("Starting Ping", context.bot, update)
+    reply = sendMessage("Starting Ping...", context.bot, update)
     end_time = int(round(time.time() * 1000))
     editMessage(f'{end_time - start_time} ms', reply)
 
@@ -137,12 +138,12 @@ def bot_help(update: Update, context: CallbackContext):
 def main():
     fs_utils.start_cleanup()
     # Check if the bot is restarting
-    if path.exists('restart.pickle'):
-        with open('restart.pickle', 'rb') as status:
-            restart_msg = pickle.load(status)
-        restart_msg.edit_text('Sync Completed!\nRestarted Successfully!')
+    if path.exists('restart_msg.txt'):
+        restart_msg_dat = open('restart_msg.txt', 'rt').read().split(' ')
+        bot.editMessageText(text='Sync Completed!\nRestarted Successfully!',
+                            chat_id=restart_msg_dat[0], message_id=restart_msg_dat[1])
         LOGGER.info('Restarted Successfully!')
-        remove('restart.pickle')
+        remove('restart_msg.txt')
 
     start_handler = CommandHandler(BotCommands.StartCommand, start,
                                    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
