@@ -168,6 +168,7 @@ def main():
     updater.idle()
     fs_utils.clean_all()
     killAll()
+    LOGGER.info("Bot Stopped!")
 
 
 main()

@@ -4,8 +4,9 @@ dynamic.env
 fileid.env
 credentials.json
 token.pickle
-authorized_chats.txt
-log.txt
+authorized.txt
+*netrc
+*log.txt
 data*
 venv
 .idea/*
