@@ -56,12 +56,13 @@ status_reply_dict = {}
 download_dict = {}
 # Stores list of users and chats the bot is authorized to use in
 AUTHORIZED_CHATS = set()
-if os.path.exists('authorized_chats.txt'):
-    with open('authorized_chats.txt', 'r+') as f:
-        lines = f.readlines()
-        for line in lines:
-            #    LOGGER.info(line.split())
-            AUTHORIZED_CHATS.add(int(line.split()[0]))
+if os.path.exists('authorized.txt'):
+    with open('authorized.txt', 'r+') as f:
+        if not f.read() == '':
+            lines = f.readlines()
+            for line in lines:
+                #    LOGGER.info(line.split())
+                AUTHORIZED_CHATS.add(int(line.split()[0]))
 try:
     BOT_TOKEN = os.environ['BOT_TOKEN']
     parent_id = os.environ['GDRIVE_FOLDER_ID']

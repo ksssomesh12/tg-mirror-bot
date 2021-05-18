@@ -95,13 +95,15 @@ def bot_help(update: Update, context: CallbackContext):
 
 /{BotCommands.MirrorCommand} Mirror the provided link to Google Drive
 
+/{BotCommands.CloneCommand} Clone folders in Google Drive (owned by someone else) to your Google Drive
+
 /{BotCommands.UnzipMirrorCommand} Mirror the provided link and if the file is in archive format, it is extracted and then uploaded to Google Drive
 
 /{BotCommands.TarMirrorCommand} Mirror the provided link and upload in archive format (.tar) to Google Drive
 
-/{BotCommands.CancelMirrorCommand} Reply with this command to the source message, and the download will be cancelled
+/{BotCommands.WatchCommand} Mirror through 'youtube-dl' to Google Drive
 
-/{BotCommands.CancelAllCommand} Cancels all running tasks (downloads, uploads, archiving, unarchiving)
+/{BotCommands.TarWatchCommand} Mirror through 'youtube-dl' and upload in archive format (.tar) to Google Drive
 
 /{BotCommands.ListCommand} Searches the Google Drive folder for any matches with the search term and presents the search results in a Telegraph page
 
@@ -121,15 +123,14 @@ def bot_help(update: Update, context: CallbackContext):
 
 /{BotCommands.LogCommand} Sends the log file of the bot and the log file of 'aria2c' daemon (can be used to analyse crash reports, if any)
 
-/{BotCommands.CloneCommand} Clone folders in Google Drive (owned by someone else) to your Google Drive
+/{BotCommands.CancelMirrorCommand} Reply with this command to the source message, and the download will be cancelled
 
-/{BotCommands.WatchCommand} Mirror through 'youtube-dl' to Google Drive
-
-/{BotCommands.TarWatchCommand} Mirror through 'youtube-dl' and upload in archive format (.tar) to Google Drive
+/{BotCommands.CancelAllCommand} Cancels all running tasks (downloads, uploads, archiving, unarchiving)
 
 /{BotCommands.DeleteCommand} Delete files in Google Drive matching the given string
 
 /{BotCommands.ConfigCommand} Edit 'config.env' file
+
 
 '''
     sendMessage(help_string, context.bot, update)
@@ -168,6 +169,7 @@ def main():
     updater.idle()
     fs_utils.clean_all()
     killAll()
+    LOGGER.info("Bot Stopped!")
 
 
 main()

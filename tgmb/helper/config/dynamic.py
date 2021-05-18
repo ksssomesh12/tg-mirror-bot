@@ -13,7 +13,7 @@ else:
     os.environ['DYNAMIC_CONFIG'] = 'false'
     DYNAMIC_CONFIG = False
 fileIdDict = {}
-configList = ['config.env', 'config.env.bak', 'credentials.json', 'token.pickle', 'netrc', 'fileid.env']
+configList = ['config.env', 'config.env.bak', 'credentials.json', 'token.pickle', 'authorized.txt', 'netrc', 'fileid.env']
 
 
 def rm_dl(fileName: str):
@@ -32,15 +32,16 @@ def rm_dl(fileName: str):
 
 def handler():
     if DYNAMIC_CONFIG:
+        LOGGER.info('Using Dynamic Config...')
         reformatter.handler('dynamic.env')
         load_env('dynamic.env')
         rm_dl('fileid.env')
         reformatter.handler('fileid.env')
         load_env('fileid.env')
-        for file in configList[0:5]:
+        for file in configList[0:6]:
             rm_dl(file)
     if not DYNAMIC_CONFIG:
-        LOGGER.info('Using Static Config, Instead of Dynamic Config')
+        LOGGER.info('Using Static Config...')
         os.environ['DL_WAIT_TIME'] = '5'
     reformatter.handler('config.env')
     load_env('config.env')
