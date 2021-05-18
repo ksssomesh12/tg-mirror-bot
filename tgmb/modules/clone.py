@@ -3,9 +3,11 @@ from tgmb.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
 from tgmb.helper.telegram_helper.message_utils import *
 from tgmb.helper.telegram_helper.filters import CustomFilters
 from tgmb.helper.telegram_helper.bot_commands import BotCommands
+from tgmb.helper.ext_utils.bot_utils import new_thread
 from tgmb import dispatcher
 
 
+@new_thread
 def cloneNode(update, context):
     args = update.message.text.split(" ", maxsplit=1)
     if len(args) > 1:
@@ -23,5 +25,5 @@ def cloneNode(update, context):
 
 
 clone_handler = CommandHandler(BotCommands.CloneCommand, cloneNode,
-                               filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
+                               filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
 dispatcher.add_handler(clone_handler)
