@@ -69,9 +69,9 @@ def restart(update: Update, context: CallbackContext):
         restart_msg.edit_text(f'Sync Completed!\n{configList}')
     if not DYNAMIC_CONFIG:
         time.sleep(5)
-    # Save restart message info in order to reply to it after restarting
-    restart_msg_dat = f"{restart_msg.chat_id} {restart_msg.message_id}"
-    open('restart_msg.txt', 'wt').write(restart_msg_dat)
+    # Save restart message object in order to reply to it after restarting
+    with open('restart.pickle', 'wb') as status:
+        pickle.dump(restart_msg, status)
     execl(executable, executable, "-m", "tgmb")
 
 
@@ -139,12 +139,12 @@ def bot_help(update: Update, context: CallbackContext):
 def main():
     fs_utils.start_cleanup()
     # Check if the bot is restarting
-    if path.exists('restart_msg.txt'):
-        restart_msg_dat = open('restart_msg.txt', 'rt').read().split(' ')
-        bot.editMessageText(text='Sync Completed!\nRestarted Successfully!',
-                            chat_id=restart_msg_dat[0], message_id=restart_msg_dat[1])
+    if path.exists('restart.pickle'):
+        with open('restart.pickle', 'rb') as status:
+            restart_msg = pickle.load(status)
+        restart_msg.edit_text('Sync Completed!\nRestarted Successfully!')
         LOGGER.info('Restarted Successfully!')
-        remove('restart_msg.txt')
+        remove('restart.pickle')
 
     start_handler = CommandHandler(BotCommands.StartCommand, start,
                                    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)

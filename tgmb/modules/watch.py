@@ -1,4 +1,4 @@
-from telegram.ext import CommandHandler
+from telegram.ext import CommandHandler, run_async
 from telegram import Bot, Update
 from tgmb import Interval, DOWNLOAD_DIR, DOWNLOAD_STATUS_UPDATE_INTERVAL, dispatcher, LOGGER
 from tgmb.helper.ext_utils.bot_utils import setInterval
@@ -38,6 +38,7 @@ def _watch(bot: Bot, update: Update, args: list, isTar=False):
         Interval.append(setInterval(DOWNLOAD_STATUS_UPDATE_INTERVAL, update_all_messages))
 
 
+@run_async
 def watchTar(update, context):
     _watch(context.bot, update, context.args, True)
 
@@ -48,9 +49,9 @@ def watch(update, context):
 
 mirror_handler = CommandHandler(BotCommands.WatchCommand, watch,
                                 pass_args=True,
-                                filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
+                                filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
 tar_mirror_handler = CommandHandler(BotCommands.TarWatchCommand, watchTar,
                                     pass_args=True,
-                                    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
+                                    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
 dispatcher.add_handler(mirror_handler)
 dispatcher.add_handler(tar_mirror_handler)

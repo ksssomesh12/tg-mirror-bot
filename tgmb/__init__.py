@@ -175,6 +175,6 @@ except KeyError:
     SHORTENER = None
     SHORTENER_API = None
 
-updater = tg.Updater(token=BOT_TOKEN)
+updater = tg.Updater(token=BOT_TOKEN, use_context=True)
 bot = updater.bot
 dispatcher = updater.dispatcher
