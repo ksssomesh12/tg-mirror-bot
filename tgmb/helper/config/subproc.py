@@ -42,7 +42,8 @@ def ariaDaemonStart():
     )
     open(ariaScriptName, 'w').write(dat)
     if open(ariaScriptName, 'r').read() == dat:
-        LOGGER.info(subprocess.run(['chmod', '+x', ariaScriptName, '-v'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
+        LOGGER.info(subprocess.run(['chmod', '+x', ariaScriptName, '-v'],
+                                   stdout=subprocess.PIPE).stdout.decode('utf-8').replace('\n', ''))
         aria2c = subprocess.Popen(f'./{ariaScriptName}')
         LOGGER.info(f"{ariaScriptName} started (pid {aria2c.pid})")
         return
@@ -55,8 +56,10 @@ def netrc():
     if os.path.exists('netrc'):
         if os.path.exists(dot_netrc):
             os.remove(dot_netrc)
-        LOGGER.info(subprocess.run(['cp', 'netrc', dot_netrc, '-v'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
-        LOGGER.info(subprocess.run(['chmod', '600', dot_netrc, '-v'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
+        LOGGER.info(subprocess.run(['cp', 'netrc', dot_netrc, '-v'],
+                                   stdout=subprocess.PIPE).stdout.decode('utf-8').replace('\n', ''))
+        LOGGER.info(subprocess.run(['chmod', '600', dot_netrc, '-v'],
+                                   stdout=subprocess.PIPE).stdout.decode('utf-8').replace('\n', ''))
     else:
         LOGGER.info("File Not Found: 'netrc'...\n'netrc' Support Disabled!")
 
@@ -65,12 +68,13 @@ def killAll():
     global aria2c
     aria2c.terminate()
     LOGGER.info(f"aria.sh killed (pid {aria2c.pid})")
-    LOGGER.info(subprocess.run(['pkill', 'aria2c', '-e'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
+    LOGGER.info(subprocess.run(['pkill', 'aria2c', '-e'],
+                               stdout=subprocess.PIPE).stdout.decode('utf-8').replace('\n', ''))
 
 
 def dl(url: str, fileName):
     DL_WAIT_TIME = int(os.environ['DL_WAIT_TIME'])
-    subprocess.run(['aria2c', url, '--quiet=true', '--out=' + fileName])
+    subprocess.run(['aria2c', url, '--quiet=true', '--out=' + fileName, '--check-certificate=false'])
     time_lapsed = 0
     while time_lapsed != DL_WAIT_TIME:
         if os.path.exists(fileName):
