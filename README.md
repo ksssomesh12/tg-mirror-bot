@@ -1,3 +1,6 @@
+# IMPORTANT NOTICE
+  > **Development on this repository has been suspended, as I have been working on a new repository, entirely rewriting the codebase from scratch implementing new features and seamless dynamic config support requiring no user intervention at all. Key features planned for this repo include Telegram Media Uploads upto 2 GB per file (already implemented, but a little buggy for timesake), better MEGA support among others. As of now, there is no ETA on when the codebase will become stable and repository will be made public. Yet, I would like to give a safe estimate on the amount of work done until now - 40%. Right now, the codebase is very stable and safe for deploying with Heroku or whichever way you prefer but the fuctionality is very limited, due to which the repository is not yet made public. If some of you want to test it, give feedback or better, improve the codebase, let me know by commenting [here](https://github.com/ksssomesh12/tg-mirror-bot/issues/34). Based on the feedback, the repository will be made public for testing purposes.**
+
 # Description:
 
 A Telegram Bot written in Python language to mirror files on the internet to Google Drive
