@@ -139,6 +139,10 @@ def is_url(url: str):
     return False
 
 
+def is_gdrive_link(url: str):
+    return "drive.google.com" in url
+
+
 def is_magnet(url: str):
     magnet = re.findall(MAGNET_REGEX, url)
     if magnet:
